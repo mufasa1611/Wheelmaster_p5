@@ -1,0 +1,89 @@
+<div class="collapse navbar-collapse" id="main-nav">
+    <ul class="navbar-nav w-auto mx-auto">
+        <li class="nav-item dropdown">
+            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" id="all-products-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                All Products
+            </a>
+
+                <!-- Global Sorting Direction Arrows -->
+                <div class="dropdown-menu border-0" aria-labelledby="all-products-link">
+
+                    <!-- Sort by Price -->
+                    <a href="{% url 'products' %}?sort=price&direction={% if current_sorting == 'price_asc' %}desc{% else %}asc{% endif %}" class="dropdown-item">
+                        {% if current_sorting == 'price_asc' %}⬆️{% else %}⬇️{% endif %} Sort by Price {% if current_sorting == 'price_asc' %}⬇️{% else %}⬆️{% endif %}
+                    </a>
+    
+                    <!-- Sort by Name -->
+                    <a href="{% url 'products' %}?sort=name&direction={% if current_sorting == 'name_asc' %}desc{% else %}asc{% endif %}" class="dropdown-item">
+                        {% if current_sorting == 'name_asc' %}⬆️{% else %}⬇️{% endif %} Sort by Name {% if current_sorting == 'name_asc' %}⬇️{% else %}⬆️{% endif %}
+                    </a>
+    
+                    <!-- Sort by Rating -->
+                    <a href="{% url 'products' %}?sort=rate&direction={% if current_sorting == 'rate_asc' %}desc{% else %}asc{% endif %}" class="dropdown-item">
+                        {% if current_sorting == 'rate_asc' %}⬆️{% else %}⬇️{% endif %} Sort by Rating {% if current_sorting == 'rate_asc' %}⬇️{% else %}⬆️{% endif %}
+                    </a>
+                </div>
+            </li>
+        </li>
+
+        <li class="nav-item dropdown">
+            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" id="equipment-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Equipment
+            </a>
+            <div class="dropdown-menu border-0" aria-labelledby="equipment-link">
+                <a href="{% url 'products' %}?category=wheelbarrows" class="dropdown-item">Wheelbarrows</a>
+                <a href="{% url 'products' %}?category=transport_trolleys" class="dropdown-item">Transport Trolleys</a>
+                <a href="{% url 'products' %}?category=scaffolding" class="dropdown-item">Scaffolding</a>
+                <a href="{% url 'products' %}?category=concrete_mixers" class="dropdown-item">Concrete Mixers</a>
+                <a href="{% url 'products' %}?category=accessories" class="dropdown-item">Accessories</a>
+                <a href="{% url 'products' %}" class="dropdown-item">All Products</a>
+            </div>
+        </li>
+        
+        <li class="nav-item dropdown">
+            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" id="construction-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Construction Tools
+            </a>
+            <div class="dropdown-menu border-0" aria-labelledby="construction-link">
+                <a href="{% url 'products' %}?category=wheelbarrows" class="dropdown-item">Wheelbarrows</a>
+                <a href="{% url 'products' %}?category=transport_trolleys" class="dropdown-item">Transport Trolleys</a>
+   <a href="{% url 'products' %}?category=mixing_tools" class="dropdown-item">Mixing Tools</a>
+                <a href="{% url 'products' %}?category=ladders_platforms" class="dropdown-item">Ladders & Platforms</a>
+                <a href="{% url 'products' %}?category=safety_gear" class="dropdown-item">Safety Gear</a>
+                <a href="{% url 'products' %}?category=construction_tools" class="dropdown-item">All Construction Tools</a>
+            </div>
+        </li>
+        
+        <li class="nav-item dropdown">
+            <a class="logo-font font-weight-bold nav-link text-black" href="#" id="specials-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Special Offers
+            </a>
+            <div class="dropdown-menu border-0" aria-labelledby="specials-link">
+                <a href="{% url 'products' %}?category=seasonal_deals" class="dropdown-item">Seasonal Deals</a>
+                <a href="{% url 'products' %}?category=bulk_discounts" class="dropdown-item">Bulk Purchase Discounts</a>
+                <a href="{% url 'products' %}?category=clearance" class="dropdown-item">Clearance</a>
+                <a href="{% url 'products' %}?category=special_offers" class="dropdown-item">All Specials</a>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<script>
+    let sortDirections = {
+        price: 'asc',
+        name: 'asc',
+        rating: 'asc'  
+    };
+
+    function sortProducts(sortKey) {
+        sortDirections[sortKey] = sortDirections[sortKey] === 'asc' ? 'desc' : 'asc';
+        const url = new URL(window.location.href);
+        url.searchParams.set('sort', sortKey);
+        url.searchParams.set('direction', sortDirections[sortKey]);
+        document.getElementById('price-sort-icon').textContent = sortDirections['price'] === 'asc' ? '⬆️' : '⬇️';
+        document.getElementById('name-sort-icon').textContent = sortDirections['name'] === 'asc' ? '⬆️' : '⬇️';
+        document.getElementById('rating-sort-icon').textContent = sortDirections['rating'] === 'asc' ? '⬆️' : '⬇️';  // Updated to 'rating-sort-icon'
+        window.location.href = url.toString();
+    }
+</script>
+

@@ -1,0 +1,87 @@
+[
+    {
+        "pk": 1,
+        "model": "products.product",
+        "fields": {
+            "sku": "WHLCHR001",
+            "name": "Standard Wheelbarrows",
+            "description": "A lightweight and durable Wheelbarrows suitable for outdoor use.",
+            "price": 150.0,
+            "category": 1,  
+            "rating": 4.6,
+            "image_url": "/media/lwheel.png",
+            "image": "lwheel.png"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "products.product",
+        "fields": {
+            "sku": "TRSPCRT001",
+            "name": "Heavy-Duty Transport Cart",
+            "description": "Robust transport cart with heavy-duty wheels for industrial use.",
+            "price": 300.0,
+            "category": 2,  
+            "rating": 4.6,
+            "image_url": "/media/transport_cart1.png",
+            "image": "transport_cart.png"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "products.product",
+        "fields": {
+            "sku": "HDWHEEL001",
+            "name": "Heavy-Duty Wheel",
+            "description": "A wheel designed to handle heavy loads, suitable for industrial trolleys and carts.",
+            "price": 45.0,
+            "category": 3,  
+            "rating": 4.7,
+            "image_url": "/media/heavy_duty_wheel.jpg",
+            "image": "heavy_duty_wheel.jpg"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "products.product",
+        "fields": {
+            "sku": "LTWHEEL001",
+            "name": "Lightweight Mobility Wheel",
+            "description": "Lightweight wheel for mobility aids and lightweight carts.",
+            "price": 30.0,
+            "category": 4,  
+            "rating": 3.0,
+            "image_url": "/media/lightweight_wheel.jpg",
+            "image": "lightweight_wheel.jpg"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "products.product",
+        "fields": {
+            "sku": "KIDSWB001",
+            "name": "Junior Garden Helper Wheelbarrow",
+            "description": "Colorful and sturdy wheelbarrow designed for young gardeners. Perfect for helping in the garden or playing in the sandbox.",
+            "price": 34.99,
+            "category": 5,
+            "rating": 4.5,
+            "image_url": "/media/kids_wheelbarrow.jpg",
+            "image": "kids_wheelbarrow.jpg"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "products.product",
+        "fields": {
+            "sku": "MAINTKIT001",
+            "name": "Maintenance Kit",
+            "description": "Comprehensive maintenance kit for wheel and cart care.",
+            "price": 25.0,
+            "category": 6,  
+            "rating": 5.0,
+            "image_url": "/media/maintenance_kit.jpg",
+            "image": "maintenance_kit.jpg"
+        }
+    }
+    
+]
