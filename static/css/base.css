@@ -79,7 +79,7 @@ a.category-badge > span.badge:hover {
     color: #fff !important;
 }
 
-/* -------------------------------- Media Queries */
+/* ---------- Media Queries ----------- */
 
 /* Slightly larger container on xl screens */
 @media (min-width: 1200px) {
