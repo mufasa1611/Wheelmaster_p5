@@ -37,7 +37,7 @@
             "price": 45.0,
             "category": 3,  
             "rating": 4.7,
-            "image_url": "/media/heavy_duty_wheel.jpg",
+            "image_url": "/media/lwheel.png",
             "image": "heavy_duty_wheel.jpg"
         }
     },
@@ -65,8 +65,8 @@
             "price": 34.99,
             "category": 5,
             "rating": 4.5,
-            "image_url": "/media/kids_wheelbarrow.jpg",
-            "image": "kids_wheelbarrow.jpg"
+            "image_url": "/media/kids_wheelbarrow.png",
+            "image": "kids_wheelbarrow.png"
         }
     },
     {
