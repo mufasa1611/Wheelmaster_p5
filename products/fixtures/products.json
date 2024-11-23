@@ -38,7 +38,7 @@
             "category": 3,  
             "rating": 4.7,
             "image_url": "/media/lwheel.png",
-            "image": "heavy_duty_wheel.jpg"
+            "image": "lwheel.png"
         }
     },
     {
@@ -51,8 +51,8 @@
             "price": 30.0,
             "category": 4,  
             "rating": 3.0,
-            "image_url": "/media/lightweight_wheel.jpg",
-            "image": "lightweight_wheel.jpg"
+            "image_url": "/media/lwheel.png",
+            "image": "lwheel.png"
         }
     },
     {

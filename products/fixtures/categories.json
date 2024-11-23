@@ -1,5 +1,5 @@
 [
-    {"pk": 1, "model": "products.category", "fields": {"name": "wheelchairs", "friendly_name": "Wheelchairs"}},
+    {"pk": 1, "model": "products.category", "fields": {"name": "wheelbarrows", "friendly_name": "Wellbarrows"}},
     {"pk": 2, "model": "products.category", "fields": {"name": "transport_carts", "friendly_name": "Transport Carts"}},
     {"pk": 3, "model": "products.category", "fields": {"name": "heavy_duty_wheels", "friendly_name": "Heavy-Duty Wheels"}},
     {"pk": 4, "model": "products.category", "fields": {"name": "lightweight_wheels", "friendly_name": "Lightweight Wheels"}},
