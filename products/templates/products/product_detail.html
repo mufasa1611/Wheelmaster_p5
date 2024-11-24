@@ -105,62 +105,9 @@
         </div>
     </div>
 {% endblock %}
+
 {% block postloadjs %}
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        // Disable +/- buttons outside 1-99 range
-        function handleEnableDisable(itemId) {
-            var currentValue = parseInt(document.getElementById(`id_qty_${itemId}`).value);
-            var minusDisabled = currentValue <= 1;
-            var plusDisabled = currentValue >= 99;
-            document.getElementById(`decrement-qty_${itemId}`).disabled = minusDisabled;
-            document.getElementById(`increment-qty_${itemId}`).disabled = plusDisabled;
-        }
-
-        // Ensure proper enabling/disabling of all inputs on page load
-        var allQtyInputs = document.querySelectorAll('.qty_input');
-        allQtyInputs.forEach(function(input) {
-            var itemId = input.dataset.item_id;
-            handleEnableDisable(itemId);
-        });
-
-        // Check enable/disable every time the input is changed
-        allQtyInputs.forEach(function(input) {
-            input.addEventListener('change', function() {
-                var itemId = this.dataset.item_id;
-                handleEnableDisable(itemId);
-            });
-        });
-
-        // Increment quantity
-        document.querySelectorAll('.increment-qty').forEach(function(button) {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                var itemId = this.dataset.item_id;
-                var input = document.getElementById(`id_qty_${itemId}`);
-                var currentValue = parseInt(input.value);
-                if (!isNaN(currentValue) && currentValue < 99) {
-                    input.value = currentValue + 1;
-                    input.dispatchEvent(new Event('change'));
-                }
-            });
-        });
-
-        // Decrement quantity
-        document.querySelectorAll('.decrement-qty').forEach(function(button) {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                var itemId = this.dataset.item_id;
-                var input = document.getElementById(`id_qty_${itemId}`);
-                var currentValue = parseInt(input.value);
-                if (!isNaN(currentValue) && currentValue > 1) {
-                    input.value = currentValue - 1;
-                    input.dispatchEvent(new Event('change'));
-                }
-            });
-        });
-    });
-</script>
-
+{{ block.super }}
+<script src="{% static 'js/quantity.js' %}"></script>
 {% endblock %}
 
