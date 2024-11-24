@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load bag_tools %}
 {% block page_header %}
     <div class="container header-container">
         <div class="row">
@@ -81,7 +81,7 @@
                                         </form>
                                         <button type="button" class="update-link btn btn-success text-center mt-2" id="updateButton">Update</button>                                    </td>
                                     <td class="py-3">
-                                        <p class="my-0">${{ item.product.price }}</p>
+                                        <p class="my-0">${{ item.product.price | calc_subtotal:item.quantity}}</p>
                                     </td>
                                 </tr>
                             {% endfor %}
