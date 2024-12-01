@@ -79,7 +79,15 @@
                                                 </div>
                                             </div>
                                         </form>
-                                        <button type="button" class="update-link btn btn-success text-center mt-2" id="updateButton">Update</button>                                    </td>
+                                        <button type="button" class="update-link btn btn-success btn-sm text-center mt-2 mr-2" id="updateButton">Update</button>
+                                        <button type="button" 
+                                            class="btn btn-danger btn-sm mt-2 remove-item" 
+                                            data-item_id="{{ item.item_id }}"
+                                            {% if item.size %}
+                                            data-product_size="{{ item.size }}"
+                                            {% endif %}
+                                            >Remove</button>
+                                    </td>
                                     <td class="py-3">
                                         <p class="my-0">${{ item.product.price | calc_subtotal:item.quantity}}</p>
                                     </td>

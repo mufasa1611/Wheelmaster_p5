@@ -28,10 +28,11 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    'localhost:5500',
+    '127.0.0.1:5500',
     '8000-mufasa1611-wheelmasterp-g2n0827wbqv.ws.codeinstitute-ide.net',
-    'https://wheelmaster-fd0d6b0f7d27.herokuapp.com/',
-    
-    ]
+    'wheelmaster-fd0d6b0f7d27.herokuapp.com',
+]
 
 
 # Application definition
@@ -85,6 +86,8 @@ TEMPLATES = [
         },
     },
 ]
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -160,7 +163,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-FREE_DELIVERY_THRESHOLD = 1000000
+FREE_DELIVERY_THRESHOLD = 1000
 STANDARD_DELIVERY_PERCENTAGE = 10
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

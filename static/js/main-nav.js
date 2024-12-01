@@ -1,7 +1,8 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     const sortSelector = document.getElementById('sort-selector');
+    if (!sortSelector) return;  // Guard clause in case element doesn't exist
     
-    sortSelector.addEventListener('change', (event) => {
+    sortSelector.addEventListener('change', function(event) {  // Changed to regular function
         const value = event.target.value;
         const url = new URL(window.location.href);
 
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = url.toString();
     });
 
+    // Set the current sort option
     const urlParams = new URLSearchParams(window.location.search);
     const currentSort = urlParams.get('sort') || 'None';
     const currentDirection = urlParams.get('direction') || 'None';

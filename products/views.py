@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse, get_object_or_404
-from django.db.models.functions import Lower
 from django.contrib import messages
 from django.db.models import Q, F
+from django.db.models.functions import Lower
 from .models import Product, Category
 
  # A view to show all products, including sorting and search queries 
