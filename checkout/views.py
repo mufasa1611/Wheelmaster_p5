@@ -1,13 +1,13 @@
+import os, stripe, json
 from django.shortcuts import render, redirect, reverse, get_object_or_404, HttpResponse
 from .forms import OrderForm
 from .models import Order, OrderLineItem
 from products.models import Product
 from django.contrib import messages
-import os
-import stripe
-import json
 from bag.contexts import bag_contents
 from django.views.decorators.http import require_POST
+from django.core.mail import send_mail
+from django.conf import settings
 
 def checkout(request):
     bag = request.session.get('bag', {})
@@ -97,10 +97,17 @@ def cache_checkout_data(request):
     try:
         pid = request.POST.get('client_secret').split('_secret')[0]
         stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
+        
+        # Check if order with this payment intent already exists
+        if Order.objects.filter(stripe_pid=pid).exists():
+            return HttpResponse(status=400)
+            
         stripe.PaymentIntent.modify(pid, metadata={
             'bag': json.dumps(request.session.get('bag', {})),
             'save_info': request.POST.get('save_info'),
-            'username': request.user,
+            'username': request.user.username 
+            if request.user.is_authenticated 
+            else 'AnonymousUser'
         })
         return HttpResponse(status=200)
     except Exception as e:
@@ -113,7 +120,37 @@ def checkout_success(request, order_number):
     """
     Handle successful checkouts
     """
+    save_info = request.session.get('save_info')
     order = get_object_or_404(Order, order_number=order_number)
+
+    # Send confirmation email
+    subject = f'Wheelmaster - Order Confirmation {order_number}'
+    message = (
+        f"Thank you for your order!\n\n"
+        f"Order Number: {order.order_number}\n"
+        f"Order Date: {order.date}\n\n"
+        f"Order Total: €{order.order_total}\n"
+        f"Delivery: €{order.delivery_cost}\n"
+        f"Grand Total: €{order.grand_total}\n\n"
+        f"Your order will be shipped to:\n"
+        f"{order.street_address1}\n"
+        f"{order.town_or_city}\n"
+        f"{order.country}\n\n"
+        f"We've got your phone number on file as {order.phone_number}\n\n"
+        f"If you have any questions, please contact us!\n\n"
+        f"Thank you for shopping with Wheelmaster!"
+    )
+    
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [order.email]
+    )
+
+    messages.success(request, f'Order successfully processed! \
+        Your order number is {order_number}. A confirmation \
+        email has been sent to {order.email}.')
 
     if 'bag' in request.session:
         del request.session['bag']
