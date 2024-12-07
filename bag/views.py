@@ -42,7 +42,12 @@ def add_to_bag(request, item_id):
                 messages.success(request, msg)
         else:
             if item_id in list(bag.keys()):
-                bag[item_id] += quantity
+                if isinstance(bag[item_id], dict):
+                    # If the existing item has a size structure
+                    bag[item_id] = quantity
+                else:
+                    # If the existing item is a simple quantity
+                    bag[item_id] += quantity
                 msg = (
                     f'Updated {product.name} quantity to '
                     f'{bag[item_id]}'
@@ -50,9 +55,7 @@ def add_to_bag(request, item_id):
                 messages.success(request, msg)
             else:
                 bag[item_id] = quantity
-                msg = (
-                    f'Added {product.name} to your bag'
-                )
+                msg = f'Added {product.name} to your bag'
                 messages.success(request, msg)
 
         request.session['bag'] = bag
