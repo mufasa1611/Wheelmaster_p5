@@ -6,6 +6,14 @@
     https://stripe.com/docs/stripe-js
 */
 
+/*
+ * Test Card Numbers for Stripe:
+ * Success: 4242 4242 4242 4242
+ * Requires Auth: 4000 0025 0000 3155
+ * Decline: 4000 0000 0000 0002
+ * Insufficient Funds: 4000 0000 0000 9995
+ */
+
 var stripePublicKey = $('#id_stripe_public_key').text().slice(1, -1);
 var clientSecret = $('#id_client_secret').text().slice(1, -1);
 var stripe = Stripe(stripePublicKey);
@@ -34,7 +42,7 @@ card.addEventListener('change', function (event) {
     if (event.error) {
         var html = `
             <span class="icon" role="alert">
-                <i class="fas fa-times"></i>
+                <i class="fa-solid fa-times"></i>
             </span>
             <span>${event.error.message}</span>
         `;
@@ -52,6 +60,7 @@ form.addEventListener('submit', function(ev) {
     card.update({ 'disabled': true});
     $('#submit-button').attr('disabled', true);
     $('#payment-form').fadeToggle(100);
+    $('#form-instructions').fadeToggle(100);
     $('#loading-overlay').fadeToggle(100);
 
     var saveInfo = Boolean($('#id-save-info').attr('checked'));
@@ -98,7 +107,7 @@ form.addEventListener('submit', function(ev) {
                 var errorDiv = document.getElementById('card-errors');
                 var html = `
                     <span class="icon" role="alert">
-                    <i class="fas fa-times"></i>
+                    <i class="fa-solid fa-times"></i>
                     </span>
                     <span>${result.error.message}</span>`;
                 $(errorDiv).html(html);

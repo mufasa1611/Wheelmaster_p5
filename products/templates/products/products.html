@@ -71,7 +71,7 @@
                                     <a href="{% url 'product_detail' product.id %}" class="text-dark d-block">
                                         <p class="mb-0 font-weight-bold">{{ product.name }}</p>
                                     </a>
-                                    <p class="mb-0 mt-2 text-success font-weight-bold">${{ product.price }}</p>
+                                    <p class="mb-0 mt-2 text-success font-weight-bold">€{{ product.price }}</p>
                                     {% if product.rating %}
                                         <p class="mb-0 text-warning">Rating: {{ product.rating }} / 5</p>
                                     {% else %}
