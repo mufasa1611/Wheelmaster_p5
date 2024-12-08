@@ -1,7 +1,6 @@
 import os
 import json
 
-import stripe
 from django.shortcuts import (
     render, redirect, reverse, get_object_or_404, HttpResponse
 )
@@ -10,16 +9,22 @@ from django.views.decorators.http import require_POST
 from django.core.mail import send_mail
 from django.conf import settings
 
+import stripe
+
+from products.models import Product
 from .forms import OrderForm
 from .models import Order, OrderLineItem
-from products.models import Product
 from bag.contexts import bag_contents
 
 
+REQUIRED_FORM_KEYS = [
+    'full_name', 'email', 'phone_number', 'country',
+    'postcode', 'town_or_city', 'street_address1',
+    'street_address2', 'county',
+]
+
 def checkout(request):
-    """
-    Handle checkout page rendering and order submission.
-    """
+    """Handle checkout page rendering and order submission."""
     bag = request.session.get('bag', {})
     if not bag:
         messages.error(request, "There's nothing in your bag at the moment.")
@@ -40,17 +45,13 @@ def checkout(request):
 
 
 def process_checkout(request, bag):
-    """
-    Process the checkout form and save the order.
-    """
-    form_data = {
-        key: request.POST[key]
-        for key in [
-            'full_name', 'email', 'phone_number', 'country',
-            'postcode', 'town_or_city', 'street_address1',
-            'street_address2', 'county',
-        ]
-    }
+    """Process the checkout form and save the order."""
+    try:
+        form_data = {key: request.POST[key] for key in REQUIRED_FORM_KEYS}
+    except KeyError as e:
+        messages.error(request, f"Missing required field: {e}." )
+        return redirect(reverse('checkout'))
+
     order_form = OrderForm(form_data)
     if not order_form.is_valid():
         messages.error(request, "There was an error with your form. Please try again.")
@@ -72,32 +73,35 @@ def process_checkout(request, bag):
 
 
 def add_order_items(order, bag):
-    """
-    Add items to the order from the shopping bag.
-    """
+    """Add items to the order from the shopping bag."""
     for item_id, item_data in bag.items():
-        product = Product.objects.get(id=item_id)
+        try:
+            product = Product.objects.get(id=item_id)
+        except Product.DoesNotExist:
+            raise
         if isinstance(item_data, int):
             OrderLineItem.objects.create(order=order, product=product, quantity=item_data)
         else:
-            for size, quantity in item_data['items_by_size'].items():
+            for size, quantity in item_data.get('items_by_size', {}).items():
                 OrderLineItem.objects.create(
                     order=order, product=product, quantity=quantity, product_size=size
                 )
 
 
 def render_checkout_page(request, bag, stripe_public_key, stripe_secret_key):
-    """
-    Render the checkout page with Stripe payment intent.
-    """
+    """Render the checkout page with Stripe payment intent."""
+    if not stripe_secret_key:
+        messages.error(request, "Stripe secret key is missing. Please contact support.")
+        return redirect(reverse('view_bag'))
+
     stripe.api_key = stripe_secret_key
     current_bag = bag_contents(request)
-    total = current_bag['grand_total']
+    total = current_bag.get('grand_total', 0)
     stripe_total = round(total * 100)
 
     try:
         intent = stripe.PaymentIntent.create(amount=stripe_total, currency='eur')
-    except stripe.error.StripeError as e:
+    except stripe.error.StripeError:
         messages.error(request, "Stripe error occurred. Please try again later.")
         return redirect(reverse('view_bag'))
 
@@ -111,11 +115,14 @@ def render_checkout_page(request, bag, stripe_public_key, stripe_secret_key):
 
 @require_POST
 def cache_checkout_data(request):
-    """
-    Cache checkout data in Stripe's metadata for the PaymentIntent.
-    """
+    """Cache checkout data in Stripe's metadata for the PaymentIntent."""
+    client_secret = request.POST.get('client_secret')
+    if not client_secret or '_secret' not in client_secret:
+        messages.error(request, "Invalid payment data. Please try again.")
+        return HttpResponse(status=400)
+
     try:
-        pid = request.POST.get('client_secret').split('_secret')[0]
+        pid = client_secret.split('_secret')[0]
         stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
         stripe.PaymentIntent.modify(
             pid,
@@ -134,20 +141,19 @@ def cache_checkout_data(request):
 
 
 def checkout_success(request, order_number):
-    """
-    Handle successful checkouts and send confirmation email.
-    """
+    """Handle successful checkouts and send confirmation email."""
     order = get_object_or_404(Order, order_number=order_number)
 
     # Send confirmation email
-    send_order_confirmation_email(order)
+    try:
+        send_order_confirmation_email(order)
+    except Exception:
+        messages.error(request, "There was an issue sending your confirmation email.")
 
     messages.success(
         request,
         f"Order successfully processed! Your order number is {order_number}. "
-        f"A confirmation email has been sent to {order.email}."
-    )
-
+        f"A confirmation email has been sent to {order.email}.")
     if 'bag' in request.session:
         del request.session['bag']
 
@@ -156,9 +162,7 @@ def checkout_success(request, order_number):
 
 
 def send_order_confirmation_email(order):
-    """
-    Send an order confirmation email to the customer.
-    """
+    """Send an order confirmation email to the customer."""
     subject = f"Wheelmaster - Order Confirmation {order.order_number}"
     message = (
         f"Thank you for your order!\n\n"
