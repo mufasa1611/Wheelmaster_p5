@@ -14,11 +14,11 @@
  * Insufficient Funds: 4000 0000 0000 9995
  */
 
-var stripePublicKey = $('#id_stripe_public_key').text().slice(1, -1);
-var clientSecret = $('#id_client_secret').text().slice(1, -1);
-var stripe = Stripe(stripePublicKey);
-var elements = stripe.elements();
-var style = {
+const stripePublicKey = $('#id_stripe_public_key').text().slice(1, -1);
+const clientSecret = $('#id_client_secret').text().slice(1, -1);
+const stripe = Stripe(stripePublicKey);
+const elements = stripe.elements();
+const style = {
     base: {
         color: '#000',
         fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
@@ -33,8 +33,8 @@ var style = {
         iconColor: '#dc3545'
     }
 };
-var card = elements.create('card', {style: style});
-var isProcessing = false;
+const card = elements.create('card', {style: style});
+let isProcessing = false;
 card.mount('#card-element');
 
 // Handle realtime validation errors on the card element
@@ -54,7 +54,7 @@ card.addEventListener('change', function (event) {
 });
 
 // Handle form submit
-var form = document.getElementById('payment-form');
+const form = document.getElementById('payment-form');
 
 form.addEventListener('submit', function(ev) {
     ev.preventDefault();
