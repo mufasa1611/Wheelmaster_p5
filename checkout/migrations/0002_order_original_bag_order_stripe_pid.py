@@ -26,4 +26,9 @@ class Migration(migrations.Migration):
             name='country',
             field=django_countries.fields.CountryField(blank_label='Country *', max_length=2),
         ),
+        migrations.AlterField(
+            model_name='orderlineitem',
+            name='product_size',
+            field=models.CharField(blank=True, max_length=10, null=True),
+        ),
     ]
