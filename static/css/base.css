@@ -19,6 +19,11 @@ body {
     width: 1.5rem;
 }
 
+.ban-font {
+    text-transform:uppercase;
+    font-size: 2rem;
+}
+
 .logo-font {
     text-transform: uppercase;
 }
@@ -158,7 +163,7 @@ a.category-badge > span.badge:hover {
 }
 
 .arrow-success {
-    border-bottom-color: #28a745 !important;
+    border-bottom-color: #08a82e !important;
 }
 
 .arrow-danger {
@@ -166,11 +171,11 @@ a.category-badge > span.badge:hover {
 }
 
 .arrow-warning {
-    border-bottom-color: #ffc107 !important;
+    border-bottom-color: #e67a00d8 !important;
 }
 
 .arrow-info {
-    border-bottom-color: #17a2b8 !important;
+    border-bottom-color: #171fb8 !important;
 }
 
 .arrow-light {
@@ -178,7 +183,7 @@ a.category-badge > span.badge:hover {
 }
 
 .arrow-dark {
-    border-bottom-color: #343a40 !important;
+    border-bottom-color: #0b3157 !important;
 }
 
 /* ---------------- Media Queries ----------------*/
@@ -214,4 +219,18 @@ a.category-badge > span.badge:hover {
     body {
         height: calc(100vh - 116px);
     }
-}
+    .ban-font {
+        text-transform:uppercase;
+        font-size: 1rem;
+    }
+
+    @media (min-width: 400px){
+    } 
+    .header-container {
+        padding-bottom: 20px;
+    }
+        .ban-font {
+            text-transform: lowercase;
+            font-size:1rem;
+    
+    }}
