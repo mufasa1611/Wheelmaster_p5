@@ -158,3 +158,15 @@ a.category-badge > span.badge:hover {
     background: #222;
     color: white;
 }
+
+@media (max-width: 768px) {
+    .StripeElement,
+      .stripe-style-input {
+      height: auto;
+      margin-bottom: 10px; 
+    }
+      .order-confirmation-wrapper {
+          margin-bottom: 10px;
+          padding: 10px;
+      }
+  }

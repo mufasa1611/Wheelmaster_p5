@@ -202,7 +202,8 @@ a.category-badge > span.badge:hover {
         top: 0;
         right: 0;
         left: 0;
-        z-index: 1030;
+        z-index: 1500;
+        position:fixed;
     }
 
     .header-container {
@@ -232,5 +233,10 @@ a.category-badge > span.badge:hover {
         .ban-font {
             text-transform: lowercase;
             font-size:1rem;
-    
-    }}
+        }
+        .row.text-center {
+                margin-top: -10px;  
+            }
+        .logo-font {font-size:large;
+            padding-top: 25px;
+        }}

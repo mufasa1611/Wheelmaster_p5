@@ -26,11 +26,19 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASE_URL = env('DATABASE_URL')
+USE_INSTATUTE_DB = env('USE_INSTATUTE_DB', default='False') == 'True'
+print(f"USE_INSTATUTE_DB: {USE_INSTATUTE_DB}")
+
+if USE_INSTATUTE_DB:
+    DATABASE_URL = env('DATABASE_URL')  # Remote database
+else:
+    DATABASE_URL = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')  # Local SQLite database
 
 DATABASES = {
     'default': dj_database_url.config(default=DATABASE_URL)
 }
+
+print(f"Using database: {DATABASE_URL}")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -70,7 +78,7 @@ INSTALLED_APPS = [
     'products',
     'bag',
     'checkout',
-    
+    'profiles',
 ]
 
 # Crispy Forms
