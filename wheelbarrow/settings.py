@@ -10,9 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
+import environ
 import dj_database_url
 from pathlib import Path
-import environ
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,10 +36,11 @@ else:
     DATABASE_URL = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')  # Local SQLite database
 
 DATABASES = {
-    'default': dj_database_url.config(default=DATABASE_URL)
+    'default': dj_database_url.config(default=DATABASE_URL),
 }
 
-print(f"Using database: {DATABASE_URL}")
+print(f"Using database: {DATABASE_URL}") # This is printing the DATABASE_URL variable. Not the actual config
+print(f"Actual Database Config: {DATABASES['default']}") # This is what django will use.
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -211,5 +213,3 @@ STRIPE_WH_SECRET = env('STRIPE_WH_SECRET', default='')
 #
 FREE_DELIVERY_THRESHOLD = 100
 STANDARD_DELIVERY_PERCENTAGE = 10
-
-
