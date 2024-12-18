@@ -27,10 +27,10 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-USE_INSTATUTE_DB = env('USE_INSTATUTE_DB', default='False') == 'True'
-print(f"USE_INSTATUTE_DB: {USE_INSTATUTE_DB}")
+USE_INSTITUTE_DB = env('USE_INSTITUTE_DB', default='False') == 'True'
+print(f"USE_INSTITUTE_DB: {USE_INSTITUTE_DB}")
 
-if USE_INSTATUTE_DB:
+if USE_INSTITUTE_DB:
     DATABASE_URL = env('DATABASE_URL')  # Remote database
 else:
     DATABASE_URL = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')  # Local SQLite database
