@@ -39,9 +39,7 @@ DATABASES = {
     'default': dj_database_url.config(default=DATABASE_URL),
 }
 
-print(f"Using database: {DATABASE_URL}") # This is printing the DATABASE_URL variable. Not the actual config
-print(f"Actual Database Config: {DATABASES['default']}") # This is what django will use.
-
+print(f"Using database: {DATABASE_URL}")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
