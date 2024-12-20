@@ -60,6 +60,8 @@ def process_checkout(request, bag):
         return redirect(reverse('checkout'))
 
     order = order_form.save()
+    request.session['save_info'] = request.POST.get('save_info')
+
     try:
         add_order_items(order, bag)
     except Product.DoesNotExist:
@@ -144,6 +146,7 @@ def cache_checkout_data(request):
 
 def checkout_success(request, order_number):
     """Handle successful checkouts and send confirmation email."""
+    save_info = request.session.get('save_info')   
     order = get_object_or_404(Order, order_number=order_number)
 
  # Attach the user's profile to the order
@@ -152,7 +155,7 @@ def checkout_success(request, order_number):
     order.save()
 
     # Save the user's info
-    save_info = request.session.get('save_info')  
+    
     if save_info:
         profile_data = {
             'default_phone_number': order.phone_number,
