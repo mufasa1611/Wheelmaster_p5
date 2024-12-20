@@ -11,3 +11,13 @@
             $(this).css('color', '#000');
         }
     });
+
+
+$('#profile-update-form').on('submit', function(e) 
+{
+    let countrySelected = $('#id_default_country').val();
+    if (!countrySelected) {
+        e.preventDefault(); 
+        alert('Please select a country if you Belong one.');
+    }
+});
