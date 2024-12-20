@@ -14,6 +14,8 @@ import stripe
 from products.models import Product
 from .forms import OrderForm
 from .models import Order, OrderLineItem
+from profiles.forms import UserProfileForm
+from profiles.models import UserProfile
 from bag.contexts import bag_contents
 
 
@@ -144,6 +146,26 @@ def checkout_success(request, order_number):
     """Handle successful checkouts and send confirmation email."""
     order = get_object_or_404(Order, order_number=order_number)
 
+ # Attach the user's profile to the order
+    profile = UserProfile.objects.get(user=request.user)
+    order.user_profile = profile
+    order.save()
+
+    # Save the user's info
+    save_info = request.session.get('save_info')  
+    if save_info:
+        profile_data = {
+            'default_phone_number': order.phone_number,
+            'default_country': order.country,
+            'default_postcode': order.postcode,
+            'default_town_or_city': order.town_or_city,
+            'default_street_address1': order.street_address1,
+            'default_street_address2': order.street_address2,
+            'default_county': order.county,
+        }
+        user_profile_form = UserProfileForm(profile_data, instance=profile)
+        if user_profile_form.is_valid():
+            user_profile_form.save()
     # Send confirmation email
     try:
         send_order_confirmation_email(order)

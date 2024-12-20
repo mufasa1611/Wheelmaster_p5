@@ -17,3 +17,8 @@
     color: #8aafd4;
     font-weight: bolder;
 }
+
+.order-history {
+    max-height: 416px; 
+    overflow-y: auto;
+}
