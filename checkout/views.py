@@ -1,6 +1,6 @@
 import os
 import json
-
+#from django.template.loader import render_to_string
 from django.shortcuts import (
     render, redirect, reverse, get_object_or_404, HttpResponse
 )
@@ -51,7 +51,7 @@ def process_checkout(request, bag):
     try:
         form_data = {key: request.POST[key] for key in REQUIRED_FORM_KEYS}
     except KeyError as e:
-        messages.error(request, f"Missing required field: {e}." )
+        messages.error(request, f"Missing required field: {e}.")
         return redirect(reverse('checkout'))
 
     order_form = OrderForm(form_data)
@@ -60,8 +60,6 @@ def process_checkout(request, bag):
         return redirect(reverse('checkout'))
 
     order = order_form.save()
-    request.session['save_info'] = request.POST.get('save_info')
-
     try:
         add_order_items(order, bag)
     except Product.DoesNotExist:
@@ -71,6 +69,21 @@ def process_checkout(request, bag):
         )
         order.delete()
         return redirect(reverse('view_bag'))
+
+    # Check if the user wants to save their information
+    if request.POST.get('save_info'):
+        profile_data = {
+            'default_phone_number': order.phone_number,
+            'default_country': order.country,
+            'default_postcode': order.postcode,
+            'default_town_or_city': order.town_or_city,
+            'default_street_address1': order.street_address1,
+            'default_street_address2': order.street_address2,
+            'default_county': order.county,
+        }
+        user_profile_form = UserProfileForm(profile_data, instance=request.user.userprofile)
+        if user_profile_form.is_valid():
+            user_profile_form.save()
 
     order.update_total()
     return redirect(reverse('checkout_success', args=[order.order_number]))
@@ -146,7 +159,6 @@ def cache_checkout_data(request):
 
 def checkout_success(request, order_number):
     """Handle successful checkouts and send confirmation email."""
-    save_info = request.session.get('save_info')   
     order = get_object_or_404(Order, order_number=order_number)
 
  # Attach the user's profile to the order
@@ -155,7 +167,7 @@ def checkout_success(request, order_number):
     order.save()
 
     # Save the user's info
-    
+    save_info = request.session.get('save_info')  
     if save_info:
         profile_data = {
             'default_phone_number': order.phone_number,
@@ -208,3 +220,39 @@ def send_order_confirmation_email(order):
         settings.DEFAULT_FROM_EMAIL,
         [order.email]
     )
+"""
+def test_email(request):
+    #Send a test email to verify email functionality.
+    
+   # Create order object for testing
+    class MakeOrder:
+        order_number = "TEST123"
+        full_name = "Test User"
+        email = "mufasa1611@gmail.com"  
+        date = "2024-12-22"
+        order_total = 100.00
+        delivery_cost = 5.00
+        grand_total = 105.00
+        street_address1 = "123 Test St"
+        town_or_city = "Test City"
+        country = "Test Country"
+        phone_number = "1234567890"
+
+    order = MakeOrder()
+
+     #Render the subject and body using the templates
+    subject = render_to_string(
+        'checkout/confirmation_emails/confirmation_email_subject.txt',
+        {'order': order}
+    ).strip()
+
+    body = render_to_string(
+        'checkout/confirmation_emails/confirmation_email_body.txt',
+        {'order': order, 'contact_email': settings.DEFAULT_FROM_EMAIL}
+    )
+
+    #Send the email
+    send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [order.email])
+
+    return HttpResponse('Test email sent successfully!')
+"""

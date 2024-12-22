@@ -27,19 +27,23 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-USE_INSTITUTE_DB = env('USE_INSTITUTE_DB', default='False') == 'True'
-print(f"USE_INSTITUTE_DB: {USE_INSTITUTE_DB}")
+
+
+USE_INSTITUTE_DB = os.getenv('USE_INSTITUTE_DB', 'False') == 'True'
 
 if USE_INSTITUTE_DB:
-    DATABASE_URL = env('DATABASE_URL')  # Remote database
+    DATABASES = {
+        'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+    }
+   
 else:
-    DATABASE_URL = 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3')  # Local SQLite database
-
-DATABASES = {
-    'default': dj_database_url.config(default=DATABASE_URL),
-}
-
-print(f"Using database: {DATABASE_URL}")
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+print(f"Using database: {DATABASES}")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -137,19 +141,15 @@ AUTHENTICATION_BACKENDS = (
 SITE_ID = 1
 
 # Email Settings
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'noreply@wheelmaster.alhanin.net'
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
-ACCOUNT_USERNAME_MIN_LENGTH = 4
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
-
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.alhanein.net'  # Outgoing server
+EMAIL_PORT = 465  # Use 465 for SSL
+EMAIL_USE_SSL = True  # Use SSL
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')  # Your email
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # Your email password
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='wheelmaster@alhanin.net')
 WSGI_APPLICATION = 'wheelbarrow.wsgi.application'
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
