@@ -27,23 +27,11 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+DATABASES = {
+    'default': dj_database_url.config(default='postgresql://neondb_owner:OsW9JEF5cVXM@ep-weathered-cloud-a2fmnvwu.eu-central-1.aws.neon.tech/quill_pagan_silk_748560')
+}
 
 
-USE_INSTITUTE_DB = os.getenv('USE_INSTITUTE_DB', 'False') == 'True'
-
-if USE_INSTITUTE_DB:
-    DATABASES = {
-        'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
-    }
-   
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
-print(f"Using database: {DATABASES}")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
