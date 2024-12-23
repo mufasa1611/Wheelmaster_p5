@@ -61,7 +61,7 @@ form.addEventListener('submit', function(ev) {
     
     if (isProcessing) return;
     
-    var saveInfo = Boolean($('#id-save-info').attr('checked'));
+    var saveInfo = Boolean($('#id-save-info').is(':checked'));
     var csrfToken = $('input[name="csrfmiddlewaretoken"]').val();
     
     card.update({ 'disabled': true});
