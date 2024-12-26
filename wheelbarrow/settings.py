@@ -28,7 +28,9 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default='postgresql://neondb_owner:OsW9JEF5cVXM@ep-weathered-cloud-a2fmnvwu.eu-central-1.aws.neon.tech/quill_pagan_silk_748560')
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL')
+    )
 }
 
 
@@ -131,13 +133,15 @@ SITE_ID = 1
 # Email Settings
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'mail.alhanein.net'  # Outgoing server
-EMAIL_PORT = 465  # Use 465 for SSL
-EMAIL_USE_SSL = True  # Use SSL
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')  # Your email
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')  # Your email password
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='wheelmaster@alhanin.net')
+EMAIL_HOST = 'wheel-master.alhanein.net' 
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True  
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')  
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')  
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL') 
 WSGI_APPLICATION = 'wheelbarrow.wsgi.application'
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -180,17 +184,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
-
-
-
-
+# Authentication settings
+LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
 
 # Stripe Configuration
 STRIPE_PUBLIC_KEY = env('STRIPE_PUBLIC_KEY', default='')
