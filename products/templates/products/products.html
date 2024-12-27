@@ -62,9 +62,9 @@
                             <div class="card-body text-center">
                                 <a href="{% url 'product_detail' product.id %}">
                                     {% if product.image %}
-                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid" style="max-width: 150px; height: auto;">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid" style="max-width: 250px; height: 125px;">
                                     {% else %}
-                                    <img src="{{ MEDIA_URL }}noimage.png" alt="{{ product.name }}" class="img-fluid" style="max-width: 150px; height: auto;">
+                                    <img src="{{ MEDIA_URL }}noimage.png" alt="{{ product.name }}" class="img-fluid" style="max-width: 175px; height: 175px;">
                                     {% endif %}
                                 </a>
                                 <div class="mt-3">
@@ -73,7 +73,7 @@
                                     </a>
                                     <p class="mb-0 mt-2 text-success font-weight-bold">€{{ product.price }}</p>
                                     {% if product.rating %}
-                                        <p class="mb-0 text-warning">Rating: {{ product.rating }} / 5</p>
+                                    <p class="mb-0">Rating: <span class="text-rate">{{ product.rating }}</span> / 5</p>
                                     {% else %}
                                         <p class="mb-0 text-muted">No rating available</p>
                                     {% endif %}
@@ -87,11 +87,20 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                    {% if forloop.counter|divisibleby:3 %}
+                    </div>
+                    <div class="row">
+                    {% endif %}
                     {% endfor %}
                 </div>
             </div>
         </div>
     </div>
+    <button class="btt-link">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 {% endblock %}
 
+{% block postloadjs %}
+<script src="{% static 'js/btn.js' %}"></script>
+{% endblock %}
