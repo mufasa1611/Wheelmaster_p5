@@ -5,6 +5,7 @@ from django.db.models import Q, F
 from django.db.models.functions import Lower
 from .models import Product, Category
 from .forms import ProductForm
+from django.http import JsonResponse
 
  # A view to show all products, including sorting and search queries 
 
@@ -124,12 +125,10 @@ def edit_product(request, product_id):
 
 @login_required
 def delete_product(request, product_id):
-    """ Delete a product from the store """
+    """ Delete a product from the store using AJAX """
     if not request.user.is_superuser:
-        messages.error(request, 'Sorry, only store owners can do that.')
-        return redirect(reverse('home'))
-
+        return JsonResponse({'error': 'Only store owners can delete products'}, status=403)
+    
     product = get_object_or_404(Product, pk=product_id)
     product.delete()
-    messages.success(request, 'Product deleted!')
-    return redirect(reverse('products'))
+    return JsonResponse({'success': 'Product deleted successfully'})
