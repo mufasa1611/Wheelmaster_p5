@@ -10,17 +10,31 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container h-100">
-        <div class="row h-100">
-            <div class="col-7 col-md-6 my-auto">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 my-auto"> <!-- Use col-md-6 instead of col-14 -->
+                <br>
                 <h1 class="display-5 logo-font text-black">
-                    The new collections are here
-                </h1>
-                <div class="my-5">
-                    <h4>
-                        <a href="{% url 'products' %}" class="shop-now-button btn btn-lg rounded-0 text-uppercase py-3">Shop Now</a>
-                    </h4>
-                </div>
+                    Welcome to Wheel Master </h1>
+                <p><br>
+                   We specialize in providing top-quality construction equipment 
+                    solutions 
+                    <br>that help you get the job done efficiently and effectively. 
+                    <br>Our product range includes everything from robust wheelbarrows 
+                    <br>and reliable concrete mixers to versatile transport trolleys and beyond.
+                </p>
+                <p>
+                    We pride ourselves on delivering durable, high-performance tools that meet the demands of both professional builders and DIY enthusiasts. 
+                    With Wheel Master, you can trust that our equipment will support you every step of the way in your construction projects. 
+                    Explore our selection and experience the difference that quality tools can make!
+                </p>
+<br><br>
+                <h2 class="display-5 logo-font text-black">
+                      The new collections are here
+                </h2>
+                <h4>
+                    <a href="{% url 'products' %}" class="shop-now-button btn btn-lg rounded-0 text-uppercase py-3">Shop Now</a>
+                </h4>
             </div>
         </div>
     </div>
