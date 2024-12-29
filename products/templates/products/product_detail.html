@@ -64,13 +64,15 @@
                             {% if s %}
                                 <div class="col-12">
                                     <p><strong>Size:</strong></p>
-                                    <select class="form-control rounded-0 w-50" name="product_size" id='id_product_size'>
+                                    <select class="form-control rounded-0 w-50" name="product_size" id="id_product_size" required>
+                                        <option value="" selected disabled>Choose size</option>
                                         <option value="50Ml">50Ml</option>
                                         <option value="70Ml">70Ml</option>
                                         <option value="80Ml">80Ml</option>
                                         <option value="90Ml">90Ml</option>
-                                        <option value="100Ml" selected>100Ml</option>
+                                        <option value="100Ml">100Ml</option>
                                     </select>
+                                    
                                 </div>
                             {% endif %}
                             <div class="col-12">
