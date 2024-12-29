@@ -87,6 +87,31 @@ a.category-badge > span.badge:hover {
     color: #fff !important;
 }
 
+.product-description {
+    word-wrap: break-word; 
+    white-space: pre-wrap; 
+    overflow-wrap: break-word; 
+    max-width: 100%; 
+    line-height: 1.3rem; /* Adds readability with proper spacing */
+    margin-top: -1.5rem;
+    color: #060025; /* Optional: Adjust text color for better readability */
+}
+
+.description-title {
+    font-size: 1.25rem;
+    text-decoration: underline;
+        font-weight: bold;
+    color: #333;
+    margin-top: 1rem;
+}
+
+.quantity-field {
+    max-width: 190px; /* Adjust width as needed */
+    text-align: center; /* Center-align the number */
+    padding: 0.5rem; /* Ensure a comfortable height */
+    font-size: 1rem; /* Match the font size with surrounding elements */
+}
+
 .btt-button {
     height: 42px;
     width: 42px;
@@ -298,6 +323,49 @@ input[name='q']::placeholder {
     }
 }
 
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 10%;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(42, 12, 94); /* Fallback color */
+    background-color: rgb(75, 2, 2); /* Black w/ opacity */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #e9e5f7;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #5d0dffd3;
+    width: 300px; /* Could be more or less, depending on screen size */
+    border-radius: 15px; /* Rounded corners */
+}
+
+.close-button {
+    color: #ff0000c7;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    border: 5px;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: rgb(231, 12, 12);
+    cursor: pointer;
+}
+
+#deleteMessage {
+    margin: 10px 0;
+    font-size: 16px;
+}
 /* pad the top a bit when navbar is collapsed on mobile */
 @media (max-width: 991px) {
     .header-container {
@@ -343,4 +411,5 @@ input[name='q']::placeholder {
     .increment-qty, .decrement-qty {
         padding: .25rem .5rem;
     }
+    
 }    
