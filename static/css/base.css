@@ -381,7 +381,7 @@ input[name='q']::placeholder {
     }
 
     .nav-link {
-        padding: 0.15rem;
+        padding: 0.5rem;
     }
 
     .nav-link i.fa-lg {
