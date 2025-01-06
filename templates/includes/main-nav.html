@@ -1,4 +1,3 @@
-
 {% load static %}
 
 <div class="collapse navbar-collapse" id="main-nav">
@@ -63,7 +62,7 @@
         </li>
         
         <li class="nav-item dropdown">
-            <a class="logo-font font-weight-bold nav-link text-black" href="#" id="specials-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" id="specials-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Special Offers
             </a>
             <div class="dropdown-menu border-0" aria-labelledby="specials-link">
@@ -71,6 +70,17 @@
                 <a href="{% url 'products' %}?category=bulk_discounts" class="dropdown-item">Bulk Purchase Discounts</a>
                 <a href="{% url 'products' %}?category=clearance" class="dropdown-item">Clearance</a>
                 <a href="{% url 'products' %}?category=special_offers" class="dropdown-item">All Specials</a>
+            </div>
+        </li>
+
+        <li class="nav-item dropdown">
+            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" id="about-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                About Us
+            </a>
+            <div class="dropdown-menu border-0" aria-labelledby="about-link">
+                <a href="{% url 'who_we_are' %}" class="dropdown-item">Who We Are</a>
+                <a href="{% url 'contact' %}" class="dropdown-item">Contact Us</a>
+                <a href="{% url 'newsletter_signup' %}" class="dropdown-item">Newsletter</a>
             </div>
         </li>
     </ul>
