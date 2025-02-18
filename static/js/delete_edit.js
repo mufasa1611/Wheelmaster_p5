@@ -4,7 +4,8 @@ $(document).ready(function () {
     // Open modal on delete button click
     $('.delete-button').on('click', function () {
         productId = $(this).data('product-id');
-        $('#deleteMessage').text('Are you sure you want to delete this product?'); 
+        const productName = $(this).data('product-name');
+        $('#deleteMessage').text(`Are you sure you want to delete ${productName}?`); 
         $('#confirmDelete').show(); 
         $('#cancelDelete').text('Cancel'); 
         $('#deleteModal').fadeIn(); 
@@ -13,21 +14,20 @@ $(document).ready(function () {
     // Confirm deletion
     $('#confirmDelete').on('click', function () {
         $.ajax({
-            type: 'DELETE',
+            type: 'POST',
             url: '/products/delete/' + productId + '/',
             headers: {
                 'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
             },
             success: function () {
-                // Remove product from DOM
-                $(`.delete-button[data-product-id="${productId}"]`).closest('.col-sm-6').fadeOut(function () {
-                    $(this).remove();
-                });
-
-                // Update message and hide confirm button
-                $('#deleteMessage').text('Product deleted successfully!');
-                $('#confirmDelete').hide();
-                $('#cancelDelete').text('Close');
+                // Check if we're on product detail page
+                if (window.location.pathname.includes('/products/') && window.location.pathname.split('/').length > 3) {
+                    // If on product detail page, redirect to products list
+                    window.location.href = '/products/';
+                } else {
+                    // If on products list, refresh the page
+                    location.reload();
+                }
             },
             error: function (xhr) {
                 // Display error message
