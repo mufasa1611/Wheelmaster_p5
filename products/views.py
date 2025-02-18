@@ -6,6 +6,7 @@ from django.db.models.functions import Lower
 from .models import Product, Category
 from .forms import ProductForm
 from django.http import JsonResponse
+import json
 
  # A view to show all products, including sorting and search queries 
 
@@ -69,6 +70,7 @@ def product_detail(request, product_id):
         'product': product,
     }
     return render(request, 'products/product_detail.html', context)
+
 @login_required
 def add_product(request):
     """ Add a product to the store """
@@ -132,3 +134,60 @@ def delete_product(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     product.delete()
     return JsonResponse({'success': 'Product deleted successfully'})
+
+@login_required
+def inventory_management(request):
+    """A view to manage product inventory"""
+    if not request.user.is_superuser:
+        messages.error(request, 'Sorry, only store owners can do that.')
+        return redirect(reverse('home'))
+
+    products = Product.objects.all().order_by('category', 'name')
+    template = 'products/inventory.html'
+    context = {
+        'products': products,
+    }
+
+    return render(request, template, context)
+
+
+@login_required
+def adjust_stock(request):
+    """Adjust product stock levels"""
+    if not request.user.is_superuser:
+        return JsonResponse({'error': 'Permission denied'}, status=403)
+
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Invalid method'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        product_id = data.get('product_id')
+        quantity = int(data.get('quantity', 0))
+        action = data.get('action')
+
+        if not all([product_id, quantity, action]) or action not in ['add', 'reduce']:
+            return JsonResponse({'error': 'Invalid data'}, status=400)
+
+        product = get_object_or_404(Product, id=product_id)
+
+        if action == 'add':
+            product.stock_qty += quantity
+        else:  # reduce
+            if product.stock_qty - quantity < product.reserved_qty:
+                return JsonResponse({
+                    'error': 'Cannot reduce stock below reserved quantity'
+                }, status=400)
+            product.stock_qty = max(0, product.stock_qty - quantity)
+
+        product.save()
+
+        return JsonResponse({
+            'stock_qty': product.stock_qty,
+            'reserved_qty': product.reserved_qty,
+        })
+
+    except (json.JSONDecodeError, ValueError, TypeError):
+        return JsonResponse({'error': 'Invalid data format'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
