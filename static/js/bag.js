@@ -1,24 +1,120 @@
-  // Update quantity on click
-$('.update-link').click(function(e) {
-    var form = $(this).prev('.update-form');
-    form.submit();
-});
-
-// Remove item functionality
-$('.remove-item').click(function(e) {
-    var itemId = $(this).data('item_id');
-    var size = $(this).data('product_size');
-    var url = `/bag/remove/${itemId}/`;
+ // Update quantity on change
+function updateQuantity(itemId, size, quantity) {
+    var url = `/bag/adjust/${itemId}/`;
     var data = {
-        'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val(),
-        'product_size': size
+        'quantity': quantity
     };
+    if (size) {
+        data.product_size = size;
+    }
 
-    $.post(url, data)
-        .done(function() {
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: data,
+        success: function(response) {
             location.reload();
-        })
-        .fail(function() {
+        },
+        error: function(xhr) {
+            if (xhr.responseJSON && xhr.responseJSON.error) {
+                alert(xhr.responseJSON.error);
+            } else {
+                alert('Error updating quantity');
+            }
             location.reload();
+        }
+    });
+}
+
+$(document).ready(function() {
+    // Handle quantity input changes
+    $('.qty_input').change(function() {
+        var itemId = $(this).data('item_id');
+        var size = $(this).data('size') || '';
+        var quantity = parseInt($(this).val());
+        
+        if (quantity >= 0) {
+            updateQuantity(itemId, size, quantity);
+        }
+    });
+
+    // Remove item and reload on click
+    $('.remove-item').click(function(e) {
+        e.preventDefault();
+        var itemId = $(this).data('item_id');
+        var size = $(this).data('size');
+        var url = `/bag/remove/${itemId}/`;
+        var data = {
+            'product_size': size
+        };
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            success: function(response) {
+                location.reload();
+            },
+            error: function(xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    alert(xhr.responseJSON.error);
+                } else {
+                    alert('Error removing item');
+                }
+                location.reload();
+            }
         });
+    });
+
+    // Quantity controls
+    function handleEnableDisable(itemId, size) {
+        var currentValue = parseInt($(`.qty_input[data-item_id='${itemId}'][data-size='${size}']`).val());
+        var maxAvailable = parseInt($(`.qty_input[data-item_id='${itemId}'][data-size='${size}']`).attr('max'));
+        var minusDisabled = currentValue < 2;
+        var plusDisabled = currentValue >= maxAvailable;
+
+        $(`.decrement-qty[data-item_id='${itemId}'][data-size='${size}']`).prop('disabled', minusDisabled);
+        $(`.increment-qty[data-item_id='${itemId}'][data-size='${size}']`).prop('disabled', plusDisabled);
+    }
+
+    // Enable/disable +/- buttons on load
+    var allQtyInputs = $('.qty_input');
+    for(var i = 0; i < allQtyInputs.length; i++){
+        var itemId = $(allQtyInputs[i]).data('item_id');
+        var size = $(allQtyInputs[i]).data('size') || '';
+        handleEnableDisable(itemId, size);
+    }
+
+    // Increment quantity
+    $('.increment-qty').click(function(e) {
+        e.preventDefault();
+        var itemId = $(this).data('item_id');
+        var size = $(this).data('size') || '';
+        var closestInput = $(`.qty_input[data-item_id='${itemId}'][data-size='${size}']`);
+        var currentValue = parseInt(closestInput.val());
+        var maxAvailable = parseInt(closestInput.attr('max'));
+        
+        if (currentValue < maxAvailable) {
+            currentValue += 1;
+            closestInput.val(currentValue);
+            handleEnableDisable(itemId, size);
+            updateQuantity(itemId, size, currentValue);
+        }
+    });
+
+    // Decrement quantity
+    $('.decrement-qty').click(function(e) {
+        e.preventDefault();
+        var itemId = $(this).data('item_id');
+        var size = $(this).data('size') || '';
+        var closestInput = $(`.qty_input[data-item_id='${itemId}'][data-size='${size}']`);
+        var currentValue = parseInt(closestInput.val());
+        
+        if (currentValue > 1) {
+            currentValue -= 1;
+            closestInput.val(currentValue);
+            handleEnableDisable(itemId, size);
+            updateQuantity(itemId, size, currentValue);
+        }
+    });
 });
