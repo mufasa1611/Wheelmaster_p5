@@ -1,6 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/stock_management.css' %}">
+{% endblock %}
+
 {% block page_header %}
     <div class="container header-container">
         <div class="row">
@@ -19,7 +23,7 @@
                         <a href="{{ product.image.url }}" target="_blank">
                             <img class="card-img-top img-fluid" src="{{ product.image.url }}" alt="{{ product.name }}">
                         </a>
-                        {% else %}
+                    {% else %}
                         <a href="">
                             <img class="card-img-top img-fluid" src="{{ MEDIA_URL }}noimage.png" alt="{{ product.name }}">
                         </a>
@@ -28,34 +32,36 @@
             </div>
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="product-details-container mb-5 mt-md-5">
-                    <p class="mb-0">{{ product.name }}</p>
-                    <p class="lead mb-0 text-left font-weight-bold">€{{ product.price }}</p>
+                    <h1 class="mb-0">{{ product.name }}</h1>
+                    <p class="lead mb-0 text-left font-weight-bold">${{ product.price }}</p>
                     {% if product.category %}
-                    <p class="small mt-1 mb-0">
-                        <a class="text-muted" href="{% url 'products' %}?category={{ product.category.name }}">
-                            <i class="fas fa-tag mr-1"></i>{{ product.category.friendly_name }}
-                        </a>
-                    </p>
+                        <p class="small mt-1 mb-0">
+                            <a href="{% url 'products' %}?category={{ product.category.name }}" class="text-muted">
+                                <i class="fas fa-tag mr-1"></i>{{ product.category.friendly_name }}
+                            </a>
+                        </p>
                     {% endif %}
                     {% if product.rating %}
                         <small class="text-muted"><i class="fas fa-star mr-1"></i>{{ product.rating }} / 5</small>
                     {% else %}
                         <small class="text-muted">No Rating</small>
                     {% endif %}
-                <div>
-                <div>
-                    {% if request.user.is_superuser %}
-                        <small class="ml-3">
-                            <button class="edit-button btn btn-warning" data-url="{% url 'edit_product' product.id %}">Edit</button> | 
-                                         <button class="delete-button btn btn-danger" data-product-id="{{ product.id }}">Delete</button>
-                        </small>
-                    {% endif %}
-                </div>
-            </div>
-                      <h5 class="mt-4 description-title">Product Description</h5>
-                <p class="product-description" >
-                    {{ product.description }}
-                </p>
+
+                    <div class="d-flex align-items-center mt-2 mb-2">
+                        {% if request.user.is_superuser %}
+                            <div class="admin-controls">
+                                <button class="btn btn-sm btn-info edit-button" 
+                                        data-url="{% url 'edit_product' product.id %}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-button" 
+                                        data-product-id="{{ product.id }}"
+                                        data-product-name="{{ product.name }}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
 
                     <form class="form" action="{% url 'add_to_bag' product.id %}" method="POST">
                         {% csrf_token %}
@@ -63,37 +69,46 @@
                             {% with product.has_sizes as s %}
                             {% if s %}
                                 <div class="col-12">
-                                    <p><strong>Size:</strong></p>
-                                    <select class="form-control rounded-0 w-50" name="product_size" id="id_product_size" required>
-                                        <option value="" selected disabled>Choose size</option>
-                                        <option value="50Ml">50Ml</option>
-                                        <option value="70Ml">70Ml</option>
-                                        <option value="80Ml">80Ml</option>
-                                        <option value="90Ml">90Ml</option>
-                                        <option value="100Ml">100Ml</option>
+                                    <p class="d-inline-block mb-0"><strong>Size:</strong></p>
+                                    <select class="form-control d-inline-block rounded-0 w-25 ml-2" name="product_size" id="id_product_size" required>
+                                        <option value="" disabled selected>Select Size</option>
+                                        <option value="100ml">100ml</option>
+                                        <option value="250ml">250ml</option>
+                                        <option value="500ml">500ml</option>
+                                        <option value="1000ml">1000ml</option>
                                     </select>
-                                    
                                 </div>
                             {% endif %}
+
                             <div class="col-12">
-                                <p class="mt-3"><strong>Quantity:</strong></p>
+                                <p class="mt-3">
+                                    <strong>Quantity:</strong>
+                                    <span class="stock-indicator ml-2" data-stock-qty data-product-id="{{ product.id }}">
+                                        ({{ product.available_qty }} in stock)
+                                    </span>
+                                </p>
                                 <div class="form-group w-50">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <button class="decrement-qty btn btn-black rounded-0" 
-                                                data-item_id="{{ product.id }}" id="decrement-qty_{{ product.id }}">
+                                                    type="button"
+                                                    data-item_id="{{ product.id }}"
+                                                    id="decrement-qty_{{ product.id }}">
                                                 <span class="icon">
                                                     <i class="fas fa-minus"></i>
                                                 </span>
                                             </button>
                                         </div>
                                         <input class="form-control qty_input" type="number"
-                                            name="quantity" value="1" min="1" max="99"
+                                            name="quantity" value="1" min="1" 
+                                            max="{{ product.available_qty }}"
                                             data-item_id="{{ product.id }}"
                                             id="id_qty_{{ product.id }}">
                                         <div class="input-group-append">
                                             <button class="increment-qty btn btn-black rounded-0"
-                                                data-item_id="{{ product.id }}" id="increment-qty_{{ product.id }}">
+                                                    type="button"
+                                                    data-item_id="{{ product.id }}"
+                                                    id="increment-qty_{{ product.id }}">
                                                 <span class="icon">
                                                     <i class="fas fa-plus"></i>
                                                 </span>
@@ -104,13 +119,10 @@
                             </div>
 
                             <div class="col{% if s %}-12 mt-2{% endif %}">
-                                <a href="{% url 'products' %}" class="btn btn-outline-black rounded-0 mt-5">
-                                    <span class="icon">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="text-uppercase">Keep Shopping</span>
-                                </a>
-                                <input type="submit" class="btn btn-black rounded-0 text-uppercase mt-5" value="Add to Bag">
+                                <input type="submit" 
+                                       class="btn btn-black rounded-0 text-uppercase mt-5 add-to-bag" 
+                                       value="Add to Bag"
+                                       {% if product.available_qty == 0 %}disabled{% endif %}>
                             </div>
                             <input type="hidden" name="redirect_url" value="{{ request.path }}">
                             {% endwith %}
@@ -121,8 +133,7 @@
         </div>
     </div>
 
-
-<!-- Confirmation Modal -->
+   <!-- Confirmation Modal -->
 <div id="deleteModal" class="modal" style="display:none;">
     <div class="modal-content">
         <h2>Confirm Deletion</h2>
@@ -136,8 +147,66 @@
 
 {% block postloadjs %}
 {{ block.super }}
-		 
-<script src="{% static 'js/quantity.js' %}"></script>
 <script src="{% static 'js/delete_edit.js' %}"></script>
+<script src="{% static 'js/stock_management.js' %}"></script>
+<script type="text/javascript">
+    // Disable +/- buttons outside 1-max range
+    function handleEnableDisable(itemId) {
+        var currentValue = parseInt($(`#id_qty_${itemId}`).val());
+        var maxAvailable = parseInt($(`#id_qty_${itemId}`).attr('max'));
+        var minusDisabled = currentValue < 2;
+        var plusDisabled = currentValue >= maxAvailable;
 
+        $(`#decrement-qty_${itemId}`).prop('disabled', minusDisabled);
+        $(`#increment-qty_${itemId}`).prop('disabled', plusDisabled);
+    }
+
+    // Ensure proper enabling/disabling of all inputs on page load
+    var allQtyInputs = $('.qty_input');
+    for(var i = 0; i < allQtyInputs.length; i++){
+        var itemId = $(allQtyInputs[i]).data('item_id');
+        handleEnableDisable(itemId);
+    }
+
+    // Check enable/disable every time the input is changed
+    $('.qty_input').change(function() {
+        var itemId = $(this).data('item_id');
+        handleEnableDisable(itemId);
+    });
+
+    // Increment quantity
+    $('.increment-qty').click(function(e) {
+        e.preventDefault();
+        var itemId = $(this).data('item_id');
+        var closestInput = $(`#id_qty_${itemId}`);
+        var currentValue = parseInt(closestInput.val());
+        var maxAvailable = parseInt(closestInput.attr('max'));
+        
+        if (currentValue < maxAvailable) {
+            closestInput.val(currentValue + 1);
+            handleEnableDisable(itemId);
+        }
+    });
+
+    // Decrement quantity
+    $('.decrement-qty').click(function(e) {
+        e.preventDefault();
+        var itemId = $(this).data('item_id');
+        var closestInput = $(`#id_qty_${itemId}`);
+        var currentValue = parseInt(closestInput.val());
+        
+        if (currentValue > 1) {
+            closestInput.val(currentValue - 1);
+            handleEnableDisable(itemId);
+        }
+    });
+
+    // Update stock display when navigating back
+    window.onpageshow = function(event) {
+        if (event.persisted) {
+            // Page was loaded from cache (back/forward navigation)
+            window.stockManager.updateStockDisplays();
+        }
+    };
+</script>
 {% endblock %}
