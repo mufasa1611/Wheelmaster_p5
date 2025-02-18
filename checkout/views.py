@@ -25,6 +25,7 @@ REQUIRED_FORM_KEYS = [
     'street_address2', 'county',
 ]
 
+
 def checkout(request):
     """Handle checkout page rendering and order submission."""
     bag = request.session.get('bag', {})
@@ -59,6 +60,11 @@ def process_checkout(request, bag):
         messages.error(request, "There was an error with your form. Please try again.")
         return redirect(reverse('checkout'))
 
+    # Validate stock availability before creating order
+    if not validate_stock_availability(bag):
+        messages.error(request, "Some items in your bag are no longer available in the requested quantity.")
+        return redirect(reverse('view_bag'))
+
     order = order_form.save()
     try:
         add_order_items(order, bag)
@@ -67,6 +73,10 @@ def process_checkout(request, bag):
             request,
             "A product in your bag couldn't be found in our database. Please contact support."
         )
+        order.delete()
+        return redirect(reverse('view_bag'))
+    except Exception as e:
+        messages.error(request, f"An error occurred processing your order: {str(e)}")
         order.delete()
         return redirect(reverse('view_bag'))
 
@@ -90,19 +100,47 @@ def process_checkout(request, bag):
 
 
 def add_order_items(order, bag):
-    """Add items to the order from the shopping bag."""
+    """Add items to the order and update stock levels."""
     for item_id, item_data in bag.items():
         try:
             product = Product.objects.get(id=item_id)
+            if isinstance(item_data, int):
+                if not product.reduce_stock(item_data):
+                    raise Exception(f"Insufficient stock for {product.name}")
+                OrderLineItem.objects.create(
+                    order=order,
+                    product=product,
+                    quantity=item_data
+                )
+            else:
+                for size, quantity in item_data['items_by_size'].items():
+                    if not product.reduce_stock(quantity):
+                        raise Exception(f"Insufficient stock for {product.name} size {size}")
+                    OrderLineItem.objects.create(
+                        order=order,
+                        product=product,
+                        quantity=quantity,
+                        product_size=size
+                    )
         except Product.DoesNotExist:
             raise
-        if isinstance(item_data, int):
-            OrderLineItem.objects.create(order=order, product=product, quantity=item_data)
-        else:
-            for size, quantity in item_data.get('items_by_size', {}).items():
-                OrderLineItem.objects.create(
-                    order=order, product=product, quantity=quantity, product_size=size
-                )
+
+
+def validate_stock_availability(bag):
+    """Validate that all items in the bag have sufficient stock."""
+    for item_id, item_data in bag.items():
+        try:
+            product = Product.objects.get(id=item_id)
+            if isinstance(item_data, int):
+                if item_data > product.available_qty:
+                    return False
+            else:
+                total_qty = sum(item_data['items_by_size'].values())
+                if total_qty > product.available_qty:
+                    return False
+        except Product.DoesNotExist:
+            return False
+    return True
 
 
 def render_checkout_page(request, bag, stripe_public_key, stripe_secret_key):
@@ -161,26 +199,27 @@ def checkout_success(request, order_number):
     """Handle successful checkouts and send confirmation email."""
     order = get_object_or_404(Order, order_number=order_number)
 
- # Attach the user's profile to the order
-    profile = UserProfile.objects.get(user=request.user)
-    order.user_profile = profile
-    order.save()
+    # Attach the user's profile to the order if user is authenticated
+    if request.user.is_authenticated:
+        profile = UserProfile.objects.get(user=request.user)
+        order.user_profile = profile
+        order.save()
 
-    # Save the user's info
-    save_info = request.session.get('save_info')  
-    if save_info:
-        profile_data = {
-            'default_phone_number': order.phone_number,
-            'default_country': order.country,
-            'default_postcode': order.postcode,
-            'default_town_or_city': order.town_or_city,
-            'default_street_address1': order.street_address1,
-            'default_street_address2': order.street_address2,
-            'default_county': order.county,
-        }
-        user_profile_form = UserProfileForm(profile_data, instance=profile)
-        if user_profile_form.is_valid():
-            user_profile_form.save()
+        # Save the user's info
+        save_info = request.session.get('save_info')  
+        if save_info:
+            profile_data = {
+                'default_phone_number': order.phone_number,
+                'default_country': order.country,
+                'default_postcode': order.postcode,
+                'default_town_or_city': order.town_or_city,
+                'default_street_address1': order.street_address1,
+                'default_street_address2': order.street_address2,
+                'default_county': order.county,
+            }
+            user_profile_form = UserProfileForm(profile_data, instance=profile)
+            if user_profile_form.is_valid():
+                user_profile_form.save()
     # Send confirmation email
     try:
         send_order_confirmation_email(order)
