@@ -1,24 +1,51 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import NewsletterForm
+from .forms import NewsletterForm, ContactForm
 
 def index(request):
-    """ A view to return the index page """
+    form = NewsletterForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Successfully subscribed to the newsletter!')
+        return redirect('home')
+    return render(request, 'home/index.html', {'newsletter_form': form})
+
+def newsletter_signup(request):
+    """Newsletter signup view"""
     if request.method == 'POST':
         form = NewsletterForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Successfully subscribed to newsletter!')
+            try:
+                form.send_confirmation_email()
+                messages.success(request, 'Successfully subscribed! Check your email.')
+            except Exception:
+                messages.error(request, 'Subscription successful, but email failed to send.')
             return redirect('home')
         else:
-            messages.error(request, 'Failed to subscribe. Please check your input.')
-    else:
-        form = NewsletterForm()
+            messages.error(request, 'You are already subscribed.')
+    
+    return render(request, 'home/newsletter.html', {'form': NewsletterForm()})
 
-    context = {
-        'newsletter_form': form,
-    }
-    return render(request, 'home/index.html', context)
+def contact(request):
+    """Contact form view"""
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            try:
+                form.send_confirmation_email()
+                messages.success(request, 'Your message has been sent successfully!')
+            except Exception:
+                messages.error(request, 'Failed to send confirmation email.')
+            return redirect('contact')
+        else:
+            messages.error(request, 'Failed to send your message. Please try again.')
+
+    return render(request, 'home/contact.html', {'form': ContactForm()})
+
+def who_we_are(request):
+    return render(request, 'home/who_we_are.html')
 
 def custom_403(request, exception):
     return render(request, '403.html', status=403)
@@ -28,26 +55,3 @@ def custom_404(request, exception):
 
 def custom_500(request):
     return render(request, '500.html', status=500)
-
-def newsletter_signup(request):
-    if request.method == 'POST':
-        form = NewsletterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Successfully subscribed to our newsletter!')
-            return redirect('home')
-        else:
-            messages.error(request, 'Failed to subscribe. Please check your input.')
-    else:
-        form = NewsletterForm()
-    
-    context = {
-        'form': form,
-    }
-    return render(request, 'home/newsletter.html', context)
-
-def who_we_are(request):
-    return render(request, 'home/who_we_are.html')
-
-def contact(request):
-    return render(request, 'home/contact.html')
