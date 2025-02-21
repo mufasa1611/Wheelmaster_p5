@@ -49,9 +49,17 @@ class Product(models.Model):
 
     def reduce_stock(self, quantity):
         """Reduce stock after successful order"""
+        try:
+            quantity = int(quantity)
+        except (TypeError, ValueError):
+            raise ValueError("Quantity must be a valid number")
+
+        if quantity <= 0:
+            raise ValueError("Quantity must be greater than zero")
+
         if self.stock_qty >= quantity:
             self.stock_qty -= quantity
             self.reserved_qty = max(0, self.reserved_qty - quantity)
             self.save()
             return True
-        return False
+        raise ValueError("Insufficient stock available")
