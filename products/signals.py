@@ -28,5 +28,5 @@ def release_reserved_quantities(sender, instance, **kwargs):
             except Product.DoesNotExist:
                 continue
     except Exception:
-        # If there's any error, we don't want to prevent session deletion
+        # Session deletion will proceed even in the event of an error.
         pass
