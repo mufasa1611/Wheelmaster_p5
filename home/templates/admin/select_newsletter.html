@@ -1,0 +1,32 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <div style="margin: 20px 0;">
+            <h3>Send Newsletter to {{ subscribers.count }} subscriber(s)</h3>
+            
+            <div style="margin: 20px 0;">
+                <label for="newsletter-select"><strong>Select Newsletter:</strong></label>
+                <select name="newsletter" id="newsletter-select" class="form-control">
+                    <option value="">Choose a newsletter...</option>
+                    {% for newsletter in newsletters %}
+                        <option value="{{ newsletter.id }}">
+                            {{ newsletter.subject }} (Created: {{ newsletter.created|date:"Y-m-d H:i" }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {% for subscriber in subscribers %}
+                <input type="hidden" name="_selected_action" value="{{ subscriber.pk }}" />
+            {% endfor %}
+            <input type="hidden" name="action" value="send_newsletter_to_selected" />
+            
+            <div style="margin-top: 20px;">
+                <input type="submit" name="apply" value="Send Newsletter" class="default">
+            </div>
+        </div>
+    </form>
+{% endblock %}
