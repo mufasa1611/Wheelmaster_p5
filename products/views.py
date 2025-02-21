@@ -160,6 +160,9 @@ def adjust_stock(request):
     if request.method != 'POST':
         return JsonResponse({'error': 'Invalid method'}, status=405)
 
+    if not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'error': 'AJAX request required'}, status=400)
+
     try:
         data = json.loads(request.body)
         product_id = data.get('product_id')
@@ -185,9 +188,25 @@ def adjust_stock(request):
         return JsonResponse({
             'stock_qty': product.stock_qty,
             'reserved_qty': product.reserved_qty,
+            'available_qty': product.stock_qty - product.reserved_qty
         })
 
-    except (json.JSONDecodeError, ValueError, TypeError):
-        return JsonResponse({'error': 'Invalid data format'}, status=400)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    except ValueError:
+        return JsonResponse({'error': 'Invalid quantity value'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def get_stock_info(request, product_id):
+    """Get stock information for a product"""
+    try:
+        product = get_object_or_404(Product, pk=product_id)
+        return JsonResponse({
+            'stock_qty': product.stock_qty,
+            'reserved_qty': product.reserved_qty,
+            'available_qty': product.stock_qty - product.reserved_qty
+        })
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
