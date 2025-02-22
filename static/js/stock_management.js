@@ -1,4 +1,3 @@
-
 class StockManager {
     constructor() {
         this.setupEventListeners();
@@ -147,6 +146,85 @@ class StockManager {
                 });
             });
         });
+
+        // Stock adjustment buttons
+        document.querySelectorAll('.adjust-stock').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const productId = button.dataset.productId;
+                const action = button.dataset.action;
+                const input = button.closest('.stock-actions').querySelector('.stock-input');
+                const quantity = parseInt(input.value);
+
+                if (!quantity || quantity < 0) {
+                    this.showToast('Please enter a valid quantity', 'error');
+                    return;
+                }
+
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                fetch('/products/adjust_stock/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: quantity,
+                        action: action
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    // Update the displayed quantities
+                    const row = button.closest('tr');
+                    row.querySelector('.stock-qty').textContent = data.stock_qty;
+                    row.querySelector('.reserved-qty').textContent = data.reserved_qty;
+                    row.querySelector('.available-qty').textContent = data.available_qty;
+                    input.value = 0; // Reset input
+
+                    // Show success message
+                    const actionText = action === 'add' ? 'added to' : 'removed from';
+                    this.showToast(`Successfully ${actionText} stock: ${quantity} items`, 'success');
+                })
+                .catch(error => {
+                    this.showToast(error.message || 'Error adjusting stock', 'error');
+                    console.error('Error:', error);
+                });
+            });
+        });
+
+        // Add toast display method if it doesn't exist
+        if (!this.showToast) {
+            this.showToast = (message, type = 'info') => {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                toast.textContent = message;
+                
+                const container = document.getElementById('toast-container');
+                if (!container) {
+                    const newContainer = document.createElement('div');
+                    newContainer.id = 'toast-container';
+                    document.body.appendChild(newContainer);
+                }
+                
+                const toastContainer = document.getElementById('toast-container');
+                toastContainer.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        setTimeout(() => toast.remove(), 300);
+                    }, 3000);
+                }, 100);
+            };
+        }
 
         // Update stock when navigating back
         window.addEventListener('pageshow', (event) => {
