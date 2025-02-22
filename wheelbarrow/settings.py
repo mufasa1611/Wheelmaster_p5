@@ -1,47 +1,61 @@
 import os
-import environ
-import dj_database_url
 from pathlib import Path
+import dj_database_url
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Initialize environ
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+# Load environment variables
+env_path = os.path.join(BASE_DIR, '.env')
+print(f"\nLoading environment from: {env_path}")
+load_dotenv(env_path, override=True)  # Force override existing env vars
 
-# Get the database status from the environment variable
-DB_STATUS = os.getenv('DB_STATUS', 'local')
+# Debug Configuration
+DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
-# Select the appropriate database URL based on status
+# Database Configuration
+DB_STATUS = os.getenv('DB_STATUS', '').strip().lower()
+print(f"Raw DB_STATUS from env: '{os.getenv('DB_STATUS')}'")
+print(f"Processed DB_STATUS: '{DB_STATUS}'")
+
+DATABASE_URL = None
+
+# Determine which database to use
 if DB_STATUS == 'remote':
-    DATABASE_URL = os.getenv('DATABASE_URL_LOCAL')
-else:
     DATABASE_URL = os.getenv('DATABASE_URL_REMOTE')
+    print(f"Using REMOTE database at: {DATABASE_URL}")
+elif DB_STATUS == 'local':
+    DATABASE_URL = os.getenv('DATABASE_URL_LOCAL')
+    print(f"Using LOCAL database at: {DATABASE_URL}")
+else:
+    print(f"Warning: Invalid DB_STATUS '{DB_STATUS}'. Must be 'local' or 'remote'.")
+    print("Defaulting to LOCAL database.")
+    DATABASE_URL = os.getenv('DATABASE_URL_LOCAL')
 
-# Configure the database
+if not DATABASE_URL:
+    raise ValueError("No database URL configured! Check your .env file.")
+
 DATABASES = {
-    'default': {
-        **dj_database_url.config(default=DATABASE_URL),
-        'URL': DATABASE_URL
-    }
+    'default': dj_database_url.config(
+        default=DATABASE_URL,
+        conn_max_age=600,  # Keep connection alive for 10 minutes
+    )
 }
-
-print(f"Using database: {DB_STATUS} ({DATABASE_URL})")
-
-# Backup settings
-BACKUP_DIR = os.path.join(BASE_DIR, 'backups')
-if not os.path.exists(BACKUP_DIR):
-    os.makedirs(BACKUP_DIR)
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+# Backup Directory (only in development)
+if DEBUG:
+    BACKUP_DIR = os.path.join(BASE_DIR, 'backups')
+    if not os.path.exists(BACKUP_DIR):
+        os.makedirs(BACKUP_DIR)
+
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -65,14 +79,14 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'crispy_forms',
-    'crispy_bootstrap4',
-    'django_countries',
     'home',
     'products',
     'bag',
     'checkout',
     'profiles',
+    'crispy_forms',
+    'crispy_bootstrap4',
+    'django_countries',
 ]
 
 # Crispy Forms
@@ -185,37 +199,52 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 # Allauth settings
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_SIGNUP_EMAIL_ENTER_TWICE = True
 ACCOUNT_USERNAME_MIN_LENGTH = 4
-ACCOUNT_USERNAME_REQUIRED = True  
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_SUBJECT_PREFIX = 'Wheelmaster - '
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'  # Change to https in production
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_PRESERVE_USERNAME_CASING = False  # Converts to lowercase
+ACCOUNT_USERNAME_BLACKLIST = ['admin', 'administrator', 'superuser']
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 
 # Additional allauth security settings
 ACCOUNT_RATE_LIMITS = {
-    "login_failed": "5/m",
-    "login": "10/m"
+    "login": "10/m",          # 10 successful logins per minute
+    "login_failed": "5/m",    # 5 failed attempts per minute
+    "signup": "5/m",          # 5 signups per minute
+    "send_mail": "5/m",       # 5 emails per minute
+    "reset_password": "5/m"   # 5 password reset attempts per minute
 }
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
-ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_LOGOUT_ON_GET = False  # Require POST request to logout
+ACCOUNT_MAX_EMAIL_ADDRESSES = 1  # Limit number of email addresses per user
+ACCOUNT_SESSION_REMEMBER = None  # Let users choose with remember me checkbox
+ACCOUNT_FORMS = {
+    'login': 'profiles.forms.CustomAuthenticationForm'
+}
 
-# Session settings
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 10
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# Session and Remember Me settings
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 days in seconds
+SESSION_COOKIE_SECURE = False  
+CSRF_COOKIE_SECURE = False    
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Don't expire when browser closes if remember me is checked
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Session security settings
+SESSION_SECURITY_EXPIRE_AFTER = 60 * 30  # 30 minutes of inactivity
+SESSION_SECURITY_WARN_AFTER = 60 * 25    # Warn after 25 minutes
 
 # Stripe Configuration
-STRIPE_PUBLIC_KEY = env('STRIPE_PUBLIC_KEY', default='')
-STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='')
-STRIPE_WH_SECRET = env('STRIPE_WH_SECRET', default='')
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', default='')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', default='')
+STRIPE_WH_SECRET = os.getenv('STRIPE_WH_SECRET', default='')
 
 FREE_DELIVERY_THRESHOLD = 100
 STANDARD_DELIVERY_PERCENTAGE = 10
