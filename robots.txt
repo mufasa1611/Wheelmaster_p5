@@ -1,0 +1,25 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /checkout/
+Disallow: /profile/
+Disallow: /account/
+Disallow: /orders/
+Disallow: /products/inventory/
+Allow: /
+
+# Specific rules for major bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Prevent media crawling to save bandwidth
+User-agent: Googlebot-Image
+Disallow: /media/
+
+# Sitemap location
+Sitemap: https://wheelmaster-fd0d6b0f7d27.herokuapp.com/sitemap.xml
