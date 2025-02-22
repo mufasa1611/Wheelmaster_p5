@@ -35,17 +35,17 @@
                             <tbody>
                                 {% for item in bag_items %}
                                     <tr>
-                                        <td class="w-25">
+                                        <td class="w-25" data-label="Product Info">
                                             <img class="img-fluid rounded" src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{{ MEDIA_URL }}noimage.png{% endif %}" alt="{{ item.product.name }}">
                                             <p class="my-0"><strong><a href="{% url 'product_detail' item.product.id %}" class="text-dark">{{ item.product.name }}</a></strong></p>
                                         </td>
-                                        <td class="py-3">
+                                        <td class="py-3" data-label="Size">
                                             <p class="my-0">{{ item.size|default:"N/A" }}</p>
                                         </td>
-                                        <td class="py-3">
+                                        <td class="py-3" data-label="Price">
                                             <p class="my-0">€{{ item.product.price }}</p>
                                         </td>
-                                        <td class="py-3">
+                                        <td class="py-3" data-label="Quantity">
                                             <div class="input-group input-group-sm w-auto">
                                                 <button class="decrement-qty btn btn-sm btn-secondary rounded-start" 
                                                         type="button"
@@ -70,31 +70,19 @@
                                                 </button>
                                             </div>
                                         </td>
-                                        <td class="py-3">
+                                        <td class="py-3" data-label="Subtotal">
                                             <p class="my-0">€{{ item.product.price|calc_subtotal:item.quantity }}</p>
                                         </td>
-                                        <td class="py-3">
+                                        <td class="py-3 text-right">
                                             <a class="remove-item text-danger" 
                                                data-item_id="{{ item.item_id }}"
                                                data-size="{{ item.size|default:'' }}"
-                                               data-url="{% url 'remove_from_bag' item.item_id %}">
+                                               data-url="{% url 'remove_from_bag' item.item_id }}">
                                                 <i class="fas fa-trash"></i>
                                             </a>
                                         </td>
                                     </tr>
                                 {% endfor %}
-                                <tr>
-                                    <td colspan="5" class="text-right">
-                                        <h6><strong>Bag Total: €{{ total|floatformat:2 }}</strong></h6>
-                                        <h6>Delivery: €{{ delivery|floatformat:2 }}</h6>
-                                        <h4 class="mt-4"><strong>Grand Total: €{{ grand_total|floatformat:2 }}</strong></h4>
-                                        {% if free_delivery_delta > 0 %}
-                                            <p class="mb-1 text-danger">
-                                                You could get free delivery by spending just <strong>€{{ free_delivery_delta }}</strong> more!
-                                            </p>
-                                        {% endif %}
-                                    </td>
-                                </tr>
                                 <tr>
                                     <td colspan="5" class="text-right">
                                         <a href="{% url 'products' %}" class="btn btn-outline-black rounded-0 btn-lg">
