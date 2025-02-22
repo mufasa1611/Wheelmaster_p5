@@ -1,0 +1,454 @@
+/* Toast Container */
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Toast Styling */
+.toast {
+    padding: 12px 24px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    color: white;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease-in-out;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.toast-success {
+    background-color: #28a745;
+}
+
+.toast-error {
+    background-color: #dc3545;
+}
+
+.toast-info {
+    background-color: #17a2b8;
+}
+
+/* Stock Input Styling */
+.stock-input {
+    width: 80px;
+    margin-right: 10px;
+}
+
+.stock-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+/* Stock Level Indicators */
+[data-stock-qty].out-of-stock {
+    color: #ff0019 !important;
+    font-weight: bold;
+}
+
+[data-stock-qty].low-stock {
+    color: #4d4807d8 !important;
+    font-weight: bold;
+}
+
+[data-stock-qty].medium-stock {
+    color: #ff8800 !important;
+    font-weight: bold;
+}
+
+[data-stock-qty].high-stock {
+    color: #28a745 !important;
+    font-weight: bold;
+}
+
+/* Product item stock status */
+.product-out-of-stock [data-stock-qty] {
+    color: #dc3545 !important;
+}
+
+.product-low-stock [data-stock-qty] {
+    color: #ff7707 !important;
+}
+
+/* Stock Quantity Indicators */
+.stock-qty, .reserved-qty, .available-qty {
+    font-weight: 600 !important;
+}
+
+.stock-qty { 
+    color: #28a745 !important; 
+}
+
+.reserved-qty { 
+    color: #072cff !important;
+    font-weight: bold !important;
+}
+
+.available-qty { 
+    color: #17a2b8 !important;
+}
+
+td.reserved-qty {
+    color: #072cff !important;
+    font-weight: bold !important;
+}
+
+td.stock-qty {
+    color: #28a745 !important;
+    font-weight: bold !important;
+}
+
+td.available-qty {
+    color: #17a2b8 !important;
+    font-weight: bold !important;
+}
+
+/* Stock Management Styles */
+
+.stock-count-field {
+    background-color: rgba(240, 240, 240, 0.5);
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.stock-count-field strong {
+    color: #333;
+}
+
+.stock-indicator {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 0.9em;
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+.stock-indicator::before {
+    content: "•";
+    margin-right: 5px;
+    font-size: 1.2em;
+}
+
+.stock-high {
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+.stock-high::before {
+    color: #28a745;
+}
+
+.stock-medium {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.stock-medium::before {
+    color: #ff7f07e3;
+}
+
+.stock-low {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.stock-low::before {
+    color: #fc8692;
+}
+
+.admin-controls {
+    margin-top: 10px;
+}
+
+.admin-controls button {
+    margin-right: 5px;
+}
+
+/* Base Table Styles */
+.inventory-table {
+    width: 100%;
+    min-width: 300px;
+    font-size: clamp(11px, 1vw, 14px);
+    table-layout: fixed;
+}
+
+.inventory-table th,
+.inventory-table td {
+    padding: clamp(4px, 0.5vw, 12px);
+    vertical-align: middle;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    position: relative;
+}
+
+/* Column Widths - Using clamp for fluid sizing */
+.sku-col { width: clamp(50px, 8%, 100px); }
+.image-col { width: clamp(40px, 7%, 80px); }
+.name-col { 
+    width: clamp(80px, 20%, 200px);
+    text-align: left;
+}
+.category-col { width: clamp(60px, 12%, 150px); }
+.price-col { width: clamp(45px, 7%, 80px); }
+.qty-col { width: clamp(35px, 6%, 70px); }
+.actions-col { width: clamp(120px, 18%, 200px); }
+
+/* Product Name */
+.product-link {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Image Styling */
+.inventory-img {
+    width: 100%;
+    height: auto;
+    max-width: clamp(30px, 100%, 100px);
+    object-fit: cover;
+    border-radius: 4px;
+    margin: 0 auto;
+    display: block;
+}
+
+/* Stock Actions Container */
+.stock-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(2px, 0.5vw, 8px);
+    justify-content: center;
+    align-items: center;
+}
+
+/* Stock Input */
+.stock-input {
+    width: clamp(40px, 5vw, 80px);
+    height: clamp(25px, 3vw, 35px);
+    padding: clamp(2px, 0.3vw, 6px);
+    font-size: inherit;
+    text-align: center;
+}
+
+/* Stock Label */
+.stock-label {
+    font-size: inherit;
+    margin: 0;
+    white-space: nowrap;
+}
+
+/* Action Buttons Container */
+.action-buttons {
+    display: flex;
+    gap: clamp(2px, 0.3vw, 5px);
+    flex-wrap: nowrap;
+    justify-content: center;
+}
+
+/* Buttons */
+.btn-sm {
+    padding: clamp(2px, 0.4vw, 8px) clamp(4px, 0.6vw, 12px);
+    font-size: inherit;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: fit-content;
+}
+
+.btn-sm i {
+    font-size: clamp(11px, 1.1vw, 14px);
+}
+
+/* Price and Quantity Columns */
+.price-col,
+.qty-col {
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Category Text */
+.category-col {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Column Headers */
+.inventory-table th {
+    white-space: normal;
+    line-height: 1.2;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1050px) {
+    .stock-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .action-buttons {
+        width: 100%;
+        justify-content: center;
+        gap: 5px;
+    }
+}
+
+/* Medium devices (tablets) */
+@media (max-width: 768px) {
+    .sku-col,
+    .category-col {
+        display: none;
+    }
+    
+    .btn-text {
+        display: none;
+    }
+    
+    .btn-sm {
+        padding: 5px;
+        width: 30px;
+        height: 30px;
+    }
+    
+    .btn-sm i {
+        margin: 0;
+    }
+    
+    .name-col {
+        width: clamp(100px, 30%, 250px);
+    }
+    
+    .actions-col {
+        width: clamp(110px, 22%, 180px);
+    }
+}
+
+/* Small devices (phones) */
+@media (max-width: 576px) {
+    .price-col {
+        display: none;
+    }
+    
+    .stock-actions {
+        gap: 3px;
+    }
+    
+    .action-buttons {
+        gap: 3px;
+    }
+    
+    .btn-sm {
+        padding: 4px;
+        width: 26px;
+        height: 26px;
+    }
+    
+    .name-col {
+        width: clamp(80px, 35%, 200px);
+    }
+    
+    .actions-col {
+        width: clamp(100px, 25%, 160px);
+    }
+    
+    .qty-col {
+        width: clamp(30px, 8%, 50px);
+    }
+}
+
+/* Stock update loading indicator */
+.stock-loading {
+    opacity: 0.5;
+    pointer-events: none;
+    position: relative;
+}
+
+.stock-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1rem;
+    height: 1rem;
+    margin: -0.5rem 0 0 -0.5rem;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Toast and Modal styles remain unchanged */
+
+.stock-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.qty-input {
+    max-width: 80px;
+}
+
+.qty-input:invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.product-out-of-stock .add-to-bag {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.product-low-stock .add-to-bag {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.in-stock {
+    color: #28a745;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+.low-stock {
+    color: #856404;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+}
+
+.out-of-stock {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
