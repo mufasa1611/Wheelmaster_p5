@@ -5,9 +5,20 @@ html {
 body {
     background: url('/media/background1.webp') no-repeat center center fixed;
     background-size: cover;
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
     color: #555;
     font-family: 'Lato';
+}
+
+header {
+    flex: none;
+}
+
+main {
+    flex: 1 0 auto;
+    padding-top: 75px; 
 }
 
 /* from Bulma */
@@ -28,6 +39,52 @@ body {
     width: fit-content;
 }
 
+/* Navigation Styles */
+.navbar-nav .nav-link {
+    color: #555;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #000 !important;
+}
+
+.dropdown-menu {
+    margin-top: 0;
+    background-color: #fff;
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+    color: #555;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+    transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #000;
+    transform: translateX(5px);
+}
+
+.dropdown-item .sort-indicator {
+    margin-left: 0.5rem;
+    font-size: 0.8em;
+}
+
+
+main.main-bg {
+    margin-top: 0; 
+    min-height: calc(100vh - 0px); 
+}
+
+/* Buttons */
 .shop-now-button {
     background: black;
     color: white;
@@ -42,7 +99,7 @@ body {
 .btn-outline-black {
     background: white;
     color: black !important;
-    /* use important to override link colors for <a> elements */
+  
     border: 1px solid black;
 }
 
@@ -100,10 +157,9 @@ a.category-badge>span.badge:hover {
     overflow-wrap: break-word;
     max-width: 80%;
     line-height: 1.3rem;
-    /* Adds readability with proper spacing */
     margin-bottom: 2rem;
     color: #060025;
-    /* Optional: Adjust text color for better readability */
+ 
 }
 
 .description-title {
@@ -150,7 +206,7 @@ input[name='q']::placeholder {
     -webkit-text-fill-color: #c15a00;
 }
 
-/* ------------------------------- bootstrap toasts */
+/* -------------- bootstrap toasts -----------------*/
 
 .message-container {
     position: fixed;
@@ -169,7 +225,6 @@ input[name='q']::placeholder {
 .toast-header.bg-success {
     background-color: #28a745 !important;
 }
-
 
 .toast-capper {
     height: 2px;
@@ -227,27 +282,35 @@ input[name='q']::placeholder {
     overflow-y: auto;
 }
 
-/* -------------------------------- Media Queries */
-
-/* Slightly larger container on xl screens */
-@media (min-width: 1200px) {
-    .container {
-        max-width: 80%;
-    }
+/* Allauth form formatting */
+.allauth-form-inner-content {
+    background-color: rgba(248, 249, 250, 0.15);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+    padding: 2rem;
+    border-radius: 0.25rem;
+    margin-top: 8rem;
 }
 
-/* Allauth form formatting */
-
 .allauth-form-inner-content p {
-    margin-top: 1.5rem;
-    /* mt-4 */
+    margin-top: 2.5rem;
     color: #6c757d;
-    /* text-secondary */
 }
 
 .allauth-form-inner-content input {
-    border-color: #000;
+    border-color: rgba(0, 0, 0, 0.2);
     border-radius: 0;
+}
+
+.allauth-form-inner-content .form-control {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #212529;
+}
+
+.allauth-form-inner-content .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
 .allauth-form-inner-content label:not([for='id_remember']) {
@@ -255,7 +318,14 @@ input[name='q']::placeholder {
 }
 
 .allauth-form-inner-content input::placeholder {
-    color: #aab7c4;
+    color: #6c757d;
+}
+
+.allauth-form-inner-content .form-group {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 1rem;
+    border-radius: 0;
 }
 
 .allauth-form-inner-content button,
@@ -276,21 +346,122 @@ input[name='q']::placeholder {
     font-size: 1rem;
     line-height: 1.5;
     border-radius: 0;
+    width: 50%;
 
     /* standard bootstrap btn transitions */
-    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+    transition: color .3s ease-in-out, background-color .3s ease-in-out, 
+    border-color .3s ease-in-out, box-shadow .3s ease-in-out;
 }
 
 .allauth-form-inner-content button:hover,
 .allauth-form-inner-content input[type='submit']:hover {
     color: #fff;
     background-color: #222;
-    border-color: #222;
+    border-color: #646262;
 }
 
 .allauth-form-inner-content a {
     color: #17a2b8;
-    /* text-info */
+    text-decoration: none;
+}
+
+/* Shopping Bag Styles */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ------------------ Media Queries -------------- */
+
+/* Slightly larger container on xl screens */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 80%;
+    }
+}
+
+/* Add margin for fixed navbar */
+@media (min-width: 992px) {
+    .allauth-form-row {
+        margin-top: 8rem;
+    }
+}
+
+/* fixed top navbar only on medium and up */
+@media (min-width: 992px) {
+    .fixed-top-desktop-only {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+    }
+
+    .header-container {
+        padding-top: 100px;
+    }
+}
+
+/* pad the top a bit when navbar is collapsed on mobile */
+@media (max-width: 991px) {
+    main {
+        padding-top: 50px;
+    }
+
+    .header-container {
+        padding-top: 90px;
+    }
+
+    body {
+        height: calc(100vh - 116px);
+    }
+
+    .display-4.logo-font.text-black {
+        font-size: 2rem;
+    }
+
+    .nav-link {
+        padding: 0.15rem;
+    }
+
+    .nav-link i.fa-lg {
+        font-size: 1rem;
+    }
+
+    .navbar-toggler {
+        padding: .6rem .6rem;
+        font-size: 1rem;
+    }
+
+    #delivery-banner h4 {
+        font-size: .9rem;
+    }
+
+    .btn.btn-outline-black.rounded-0,
+    .btn.btn-black.rounded-0 {
+        padding: .375rem .375rem;
+    }
+
+    .btn.btn-outline-black.rounded-0.btn-lg,
+    .btn.btn-black.rounded-0.btn-lg {
+        padding: .375rem .375rem;
+        font-size: .75rem;
+    }
+
+    .increment-qty,
+    .decrement-qty {
+        padding: .25rem .5rem !important;
+    }
+
+    .allauth-form-inner-content {
+        background-color: rgba(248, 249, 250, 0.15);
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        backdrop-filter: blur(5px);
+        padding: 1rem;
+        border-radius: 0.25rem;
+        margin-top: 6rem;
+    }
 }
 
 /* Product Form */
@@ -321,56 +492,23 @@ input[name='q']::placeholder {
     border-radius: 0;
 }
 
-
-/* fixed top navbar only on medium and up */
-@media (min-width: 992px) {
-    .fixed-top-desktop-only {
-        position: fixed;
-        top: 0;
-        right: 0;
-        left: 0;
-        z-index: 1030;
-    }
-
-    .header-container {
-        padding-top: 164px;
-    }
-}
-
 .modal {
     display: none;
-    /* Hidden by default */
     position: fixed;
-    /* Stay in place */
     z-index: 1000;
-    /* Sit on top */
     left: 0;
     top: 10%;
     width: 100%;
-    /* Full width */
     height: 100%;
-    /* Full height */
-    overflow: auto;
-    /* Enable scroll if needed */
-    background-color: rgb(42, 12, 94);
-    /* Fallback color */
-    background-color: rgb(75, 2, 2);
-    /* Black w/ opacity */
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .modal-content {
     background-color: #e9e5f7;
     margin: 15% auto;
-    /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #5d0dffd3;
     width: 300px;
-    /* Could be more or less, depending on screen size */
     border-radius: 15px;
-    /* Rounded corners */
 }
 
 .close-button {
@@ -392,91 +530,37 @@ input[name='q']::placeholder {
     font-size: 16px;
 }
 
-/* pad the top a bit when navbar is collapsed on mobile */
-@media (max-width: 991px) {
-    .header-container {
-        padding-top: 146px;
-    }
-
-    body {
-        height: calc(100vh - 116px);
-    }
-
-    .display-4.logo-font.text-black {
-        font-size: 2rem;
-    }
-
-    .nav-link {
+/* Shopping bag on very small screens */
+@media (max-width: 470px) and (min-width: 200px) {
+    /* Shopping bag table adjustments */
+    .table td {
         padding: 0.5rem;
+        font-size: 0.9rem;
     }
 
-    .nav-link i.fa-lg {
-        font-size: 1rem;
+    .table th {
+        padding: 0.5rem;
+        font-size: 0.85rem;
     }
 
-    .navbar-toggler {
-
-        padding: .6rem .6rem;
-        font-size: 1rem;
+    .table img {
+        max-width: 60px;
     }
 
-    #delivery-banner h4 {
-        font-size: .9rem;
+    .input-group.input-group-sm {
+        max-width: 80px;
     }
 
-    .btn.btn-outline-black.rounded-0,
-    .btn.btn-black.rounded-0 {
-        padding: .375rem .375rem;
+    .input-group-sm .btn {
+        padding: 0.15rem 0.3rem;
     }
 
-    .btn.btn-outline-black.rounded-0.btn-lg,
-    .btn.btn-black.rounded-0.btn-lg {
-        padding: .375rem .375rem;
-        font-size: .75rem;
+    .input-group-sm .qty_input {
+        padding: 0.15rem;
+        font-size: 0.9rem;
     }
 
-    .increment-qty,
-    .decrement-qty {
-        padding: .25rem .5rem;
+    .table .remove-item {
+        font-size: 0.9rem;
     }
-
-}
-
-/* Navigation Styles */
-.navbar-nav .nav-link {
-    color: #555;
-    font-size: 1rem;
-    padding: 0.5rem 1rem;
-    transition: color 0.3s ease;
-}
-
-.navbar-nav .nav-link:hover {
-    color: #000 !important;
-}
-
-.dropdown-menu {
-    margin-top: 0;
-    background-color: #fff;
-    border: none;
-    border-radius: 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.dropdown-item {
-    color: #555;
-    padding: 0.5rem 1.5rem;
-    font-size: 0.9rem;
-    font-weight: 400;
-    transition: all 0.3s ease;
-}
-
-.dropdown-item:hover {
-    background-color: #f8f9fa;
-    color: #000;
-    transform: translateX(5px);
-}
-
-.dropdown-item .sort-indicator {
-    margin-left: 0.5rem;
-    font-size: 0.8em;
 }
