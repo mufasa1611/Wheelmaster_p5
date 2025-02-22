@@ -1,0 +1,89 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/stock_management.css' %}">
+{% endblock %}
+
+{% block page_header %}
+<div class="container header-container">
+    <div class="row">
+        <div class="col">
+            <h1 class="text-center my-4">Inventory Management</h1>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<div class="overlay"></div>
+<div class="container-fluid px-2 px-sm-3 px-md-4">
+    <div class="row">
+        <div class="col">
+            <div class="table-responsive">
+                <table class="table table-hover inventory-table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="sku-col">SKU</th>
+                            <th class="image-col">Image</th>
+                            <th class="name-col">Product Name</th>
+                            <th class="category-col">Category</th>
+                            <th class="price-col">Price</th>
+                            <th class="qty-col">Total</th>
+                            <th class="qty-col">Reserved</th>
+                            <th class="qty-col">Available</th>
+                            <th class="actions-col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr data-product-id="{{ product.id }}">
+                            <td class="sku-col">{{ product.sku }}</td>
+                            <td class="image-col">
+                                {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="inventory-img">
+                                {% else %}
+                                <img src="{{ MEDIA_URL }}noimage.png" alt="No image" class="inventory-img">
+                                {% endif %}
+                            </td>
+                            <td class="name-col">
+                                <a href="{% url 'product_detail' product.id %}" class="product-link">{{ product.name }}</a>
+                            </td>
+                            <td class="category-col">{{ product.category.name }}</td>
+                            <td class="price-col">€{{ product.price }}</td>
+                            <td class="qty-col stock-qty">{{ product.stock_qty }}</td>
+                            <td class="qty-col reserved-qty">{{ product.reserved_qty|default:0 }}</td>
+                            <td class="qty-col available-qty">{{ product.available_qty }}</td>
+                            <td class="actions-col">
+                                <div class="stock-actions">
+                                    <label class="stock-label">Qty:</label>
+                                    <input type="number" class="form-control form-control-sm stock-input" min="0" value="0" placeholder="Qty" data-product-id="{{ product.id }}">
+                                    <div class="action-buttons">
+                                        <button class="btn btn-sm btn-outline-danger adjust-stock" data-action="reduce" data-product-id="{{ product.id }}" title="Remove from Stock">
+                                            <i class="fas fa-minus"></i><span class="btn-text"> Remove</span>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success adjust-stock" data-action="add" data-product-id="{{ product.id }}" title="Add to Stock">
+                                            <i class="fas fa-plus"></i><span class="btn-text"> Add</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+{% endblock %}
+
+{% block postloadjs %}
+{{ block.super }}
+<script src="{% static 'js/stock_management.js' %}"></script>
+{% endblock %}
