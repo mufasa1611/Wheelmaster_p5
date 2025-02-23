@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables
 env_path = os.path.join(BASE_DIR, '.env')
 print(f"\nLoading environment from: {env_path}")
-load_dotenv(env_path, override=True)  # Force override existing env vars
+load_dotenv(env_path, override=True)  
 
 # Debug Configuration
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
@@ -39,7 +39,7 @@ if not DATABASE_URL:
 DATABASES = {
     'default': dj_database_url.config(
         default=DATABASE_URL,
-        conn_max_age=600,  # Keep connection alive for 10 minutes
+        conn_max_age=9000,  # Keep connection alive for 15 minutes
     )
 }
 
@@ -52,7 +52,6 @@ if DEBUG:
     if not os.path.exists(BACKUP_DIR):
         os.makedirs(BACKUP_DIR)
 
-# SECURITY WARNING: don't run with debug turned on in production!
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -211,6 +210,7 @@ ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'  # Change to https in production
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_PRESERVE_USERNAME_CASING = False  # Converts to lowercase
 ACCOUNT_USERNAME_BLACKLIST = ['admin', 'administrator', 'superuser']
+ACCOUNT_SESSION_REMEMBER = None  # Let the users choose with remember me checkbox
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 
@@ -225,14 +225,8 @@ ACCOUNT_RATE_LIMITS = {
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 ACCOUNT_LOGOUT_ON_GET = False  # Require POST request to logout
 ACCOUNT_MAX_EMAIL_ADDRESSES = 1  # Limit number of email addresses per user
-ACCOUNT_SESSION_REMEMBER = None  # Let users choose with remember me checkbox
-ACCOUNT_FORMS = {
-    'login': 'profiles.forms.CustomAuthenticationForm'
-}
-
-# Session and Remember Me settings
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 30  # 30 days in seconds
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 10  # 10 days in seconds
 SESSION_COOKIE_SECURE = False  
 CSRF_COOKIE_SECURE = False    
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Don't expire when browser closes if remember me is checked
