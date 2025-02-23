@@ -15,33 +15,41 @@ load_dotenv(env_path, override=True)
 DEBUG = os.getenv('DEBUG', 'True').lower() == 'true'
 
 # Database Configuration
-DB_STATUS = os.getenv('DB_STATUS', '').strip().lower()
-print(f"Raw DB_STATUS from env: '{os.getenv('DB_STATUS')}'")
-print(f"Processed DB_STATUS: '{DB_STATUS}'")
-
-DATABASE_URL = None
-
-# Determine which database to use
-if DB_STATUS == 'remote':
-    DATABASE_URL = os.getenv('DATABASE_URL_REMOTE')
-    print(f"Using REMOTE database at: {DATABASE_URL}")
-elif DB_STATUS == 'local':
-    DATABASE_URL = os.getenv('DATABASE_URL_LOCAL')
-    print(f"Using LOCAL database at: {DATABASE_URL}")
+# Check for Heroku's DATABASE_URL first
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL:
+    print("Using Heroku's DATABASE_URL")
 else:
-    print(f"Warning: Invalid DB_STATUS '{DB_STATUS}'. Must be 'local' or 'remote'.")
-    print("Defaulting to LOCAL database.")
-    DATABASE_URL = os.getenv('DATABASE_URL_LOCAL')
+    # Fallback to DB_STATUS logic if DATABASE_URL is not set
+    DB_STATUS = os.getenv('DB_STATUS', '').strip().lower()
+    print(f"Raw DB_STATUS from env: '{os.getenv('DB_STATUS')}'")
+    print(f"Processed DB_STATUS: '{DB_STATUS}'")
 
+    # Determine which database to use
+    if DB_STATUS == 'remote':
+        DATABASE_URL = os.getenv('DATABASE_URL_REMOTE')
+        print(f"Using REMOTE database at: {DATABASE_URL}")
+    elif DB_STATUS == 'local':
+        DATABASE_URL = os.getenv('DATABASE_URL_LOCAL')
+        print(f"Using LOCAL database at: {DATABASE_URL}")
+    else:
+        print(f"Warning: Invalid DB_STATUS '{DB_STATUS}'. Must be 'local' or 'remote'.")
+        print("Defaulting to LOCAL database.")
+        DATABASE_URL = os.getenv('DATABASE_URL_LOCAL')
+
+# Ensure a database URL is configured
 if not DATABASE_URL:
     raise ValueError("No database URL configured! Check your .env file.")
 
+# Configure Django DATABASES
 DATABASES = {
     'default': dj_database_url.config(
         default=DATABASE_URL,
         conn_max_age=9000,  # Keep connection alive for 15 minutes
     )
 }
+
+print(f"Using database at: {DATABASES['default']['HOST']}")
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')
