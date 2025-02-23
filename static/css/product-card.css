@@ -27,7 +27,6 @@
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
 }
 
-
 .card-body {
     padding: 1rem;
     text-align: center;
@@ -36,7 +35,7 @@
 .card-title {
     font-size: 1rem;
     font-weight: bold;
-    margin-bottom: 0.5rem;
+    margin-bottom: .5rem;
     display: block;
     color: #0080ff important ;
     text-decoration: none;
@@ -55,17 +54,102 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 991px) {
     .product-card {
-        flex: 1 1 calc(50% - 1.5rem); 
+        flex: 1 1 calc(33.333% - 1.5rem);
     }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 767px) {
     .product-card {
-        flex: 1 1 calc(100% - 1rem); 
+        flex: 1 1 calc(50% - 1.5rem);
     }
-    .card-img-container {
-        height: 120px;
+}
+
+@media (max-width: 575px) {
+    .product-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+}
+
+/* Bag Template Styles */
+@media (max-width: 767px) {
+    .table-responsive {
+        border: 0;
+    }
+
+    .table thead {
+        display: none;
+    }
+
+    .table tr {
+        display: block;
+        margin-bottom: 1.5rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .table td {
+        display: block;
+        text-align: right;
+        padding: 0.75rem;
+        border: none;
+    }
+
+    .table td:before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+    }
+
+    /* Product Info Cell */
+    .table td.w-25 {
+        width: 100% !important;
+        text-align: center;
+        padding-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .table td.w-25:before {
+        display: none; /* Hide the "Product Info" label */
+    }
+
+    .table td.w-25 img {
+        max-width: 200px;
+        margin-bottom: 1rem;
+        border: 3px solid #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        padding: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .table td.w-25 img:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .table td.w-25 p {
+        width: 100%;
+        text-align: center;
+        margin-top: 0.5rem !important;
+    }
+
+    .input-group {
+        justify-content: flex-end;
+    }
+
+    .qty_input {
+        max-width: 60px;
+    }
+
+    /* Add border between sections */
+    .table td:not(:last-child) {
+        border-bottom: 1px solid #eee;
     }
 }
