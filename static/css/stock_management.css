@@ -180,6 +180,7 @@ td.available-qty {
     min-width: 300px;
     font-size: clamp(11px, 1vw, 14px);
     table-layout: fixed;
+    margin-top: 2rem;
 }
 
 .inventory-table th,
@@ -451,4 +452,72 @@ td.available-qty {
     color: #721c24;
     background-color: #f8d7da;
     border: 1px solid #f5c6cb;
+}
+
+.header-container {
+    margin-top: 7.5rem;
+}
+
+.inventory-table {
+    margin-top: .5rem;
+}
+
+.inventory-img {
+    max-width: 100px;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* Column widths */
+.sku-col {
+    width: 10%;
+}
+
+.image-col {
+    width: 12%;
+}
+
+.name-col {
+    width: 20%;
+}
+
+.category-col {
+    width: 12%;
+}
+
+.price-col {
+    width: 10%;
+}
+
+.qty-col {
+    width: 8%;
+}
+
+.actions-col {
+    width: 12%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991px) {
+    .header-container {
+        margin-top: 2rem;
+    }
+
+    .inventory-table {
+        margin-top: .5rem;
+    }
+
+    .inventory-img {
+        max-width: 60px;
+    }
+}
+
+@media (max-width: 767px) {
+    .header-container {
+        margin-top: 2rem;
+    }
+    
+    .table-responsive {
+        font-size: 0.5rem;
+    }
 }
