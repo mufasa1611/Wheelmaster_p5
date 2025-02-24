@@ -205,7 +205,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
 if 'DYNO' in os.environ:  # Heroku environment
-    MEDIA_URL = 'https://res.cloudinary.com/dzttk2ryf/'  # Use direct Cloudinary URLs
+    MEDIA_URL = 'https://res.cloudinary.com/dzttk2ryf/image/upload/v1740353710/media/' 
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
     CLOUDINARY_STORAGE = {
         'CLOUDINARY_URL': os.getenv('CLOUDINARY_URL')
