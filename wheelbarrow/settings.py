@@ -201,21 +201,20 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Always use WhiteNoise for static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# Use different storage backends based on environment
-if not DEBUG:  # Use Cloudinary in production
+if 'DYNO' in os.environ:  # Heroku environment
+    MEDIA_URL = 'https://res.cloudinary.com/dzttk2ryf/'  # Use direct Cloudinary URLs
     DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
     CLOUDINARY_STORAGE = {
         'CLOUDINARY_URL': os.getenv('CLOUDINARY_URL')
     }
-else:  # Use local storage in development
+else:  # Local environment
+    MEDIA_URL = '/media/'
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Authentication settings
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
