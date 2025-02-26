@@ -57,7 +57,7 @@
                                                        type="number"
                                                        name="quantity"
                                                        value="{{ item.quantity }}"
-                                                       min="0"
+                                                       min="1"
                                                        max="{{ item.product.available_qty|add:item.quantity }}"
                                                        data-item_id="{{ item.item_id }}"
                                                        data-size="{{ item.size|default:'' }}"

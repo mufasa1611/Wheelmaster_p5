@@ -27,13 +27,26 @@ function updateQuantity(itemId, size, quantity) {
 }
 
 $(document).ready(function() {
+    // Prevent non-numeric keys and zero
+    $('.qty_input').keypress(function(e) {
+        // Get the key code
+        var keyCode = e.which ? e.which : e.keyCode;
+        
+        // Allow only keys 1-9 (key codes 49-57)
+        if (keyCode < 49 || keyCode > 57) {
+            e.preventDefault();
+            return false;
+        }
+        return true;
+    });
+
     // Handle quantity input changes
     $('.qty_input').change(function() {
         var itemId = $(this).data('item_id');
         var size = $(this).data('size') || '';
         var quantity = parseInt($(this).val());
         
-        if (quantity >= 0) {
+        if (quantity >= 1) {
             updateQuantity(itemId, size, quantity);
         }
     });
