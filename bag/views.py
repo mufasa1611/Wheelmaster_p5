@@ -81,18 +81,25 @@ def adjust_bag(request, item_id):
         # Calculate quantity difference
         qty_difference = quantity - current_qty
 
-        # If increasing quantity, validate stock
+        # If increasing quantity, validate stock and reserve it
         if qty_difference > 0:
             if qty_difference > product.available_qty:
+                messages.error(request, f'Sorry, only {product.available_qty} additional units available.')
                 return HttpResponse(status=400)
             if not product.reserve_stock(qty_difference):
+                messages.error(request, 'Sorry, the requested quantity is no longer available.')
                 return HttpResponse(status=400)
-        # If decreasing quantity, release stock
+        # If decreasing quantity, release the correct amount of stock
         elif qty_difference < 0:
             product.release_stock(abs(qty_difference))
 
+        # Update the bag with new quantity
         if size:
             if quantity > 0:
+                if item_id not in bag:
+                    bag[item_id] = {'items_by_size': {}}
+                elif not isinstance(bag[item_id], dict):
+                    bag[item_id] = {'items_by_size': {}}
                 bag[item_id]['items_by_size'][size] = quantity
             else:
                 del bag[item_id]['items_by_size'][size]
@@ -108,6 +115,7 @@ def adjust_bag(request, item_id):
         return HttpResponse(status=200)
 
     except Exception as e:
+        messages.error(request, f'Error updating bag: {str(e)}')
         return HttpResponse(status=500)
 
 def remove_from_bag(request, item_id):
