@@ -81,10 +81,10 @@
                             {% endif %}
 
                             <div class="col-12">
-                                <p class="mt-3">
+                                <p class="mt-3 stock-quantity-container">
                                     <strong>Quantity:</strong>
                                     <span class="stock-indicator ml-2" data-stock-qty data-product-id="{{ product.id }}">
-                                        ({{ product.available_qty }} in stock)
+                                        ( {{ product.available_qty }} in stock )
                                     </span>
                                 </p>
                                 <div class="form-group w-50">
@@ -146,80 +146,90 @@
 {% endblock %}
 
 {% block postloadjs %}
-{{ block.super }}
-<script src="{% static 'js/delete_edit.js' %}"></script>
-<script src="{% static 'js/stock_management.js' %}"></script>
-<script type="text/javascript">
-    // Disable +/- buttons outside 1-max range
-    function handleEnableDisable(itemId) {
-        var currentValue = parseInt($(`#id_qty_${itemId}`).val());
-        var maxAvailable = parseInt($(`#id_qty_${itemId}`).attr('max'));
-        var minusDisabled = currentValue < 2;
-        var plusDisabled = currentValue >= maxAvailable;
+    {{ block.super }}
+    <script src="{% static 'js/delete_edit.js' %}"></script>
+    <script src="{% static 'js/stock_management.js' %}"></script>
+    <script type="text/javascript">
+        // Initialize stock management
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof StockManager !== 'undefined') {
+                window.stockManager = new StockManager();
+            } else {
+                console.error('StockManager not loaded');
+            }
+        });
+    </script>
+    <script type="text/javascript">
+        // Disable +/- buttons outside 1-max range
+        function handleEnableDisable(itemId) {
+            var currentValue = parseInt($(`#id_qty_${itemId}`).val());
+            var maxAvailable = parseInt($(`#id_qty_${itemId}`).attr('max'));
+            var minusDisabled = currentValue < 2;
+            var plusDisabled = currentValue >= maxAvailable;
 
-        $(`#decrement-qty_${itemId}`).prop('disabled', minusDisabled);
-        $(`#increment-qty_${itemId}`).prop('disabled', plusDisabled);
-    }
+            $(`#decrement-qty_${itemId}`).prop('disabled', minusDisabled);
+            $(`#increment-qty_${itemId}`).prop('disabled', plusDisabled);
+        }
 
-    // Ensure proper enabling/disabling of all inputs on page load
-    var allQtyInputs = $('.qty_input');
-    for(var i = 0; i < allQtyInputs.length; i++){
-        var itemId = $(allQtyInputs[i]).data('item_id');
-        handleEnableDisable(itemId);
-    }
+        // Ensure proper enabling/disabling of all inputs on page load
+        var allQtyInputs = $('.qty_input');
+        for(var i = 0; i < allQtyInputs.length; i++){
+            var itemId = $(allQtyInputs[i]).data('item_id');
+            handleEnableDisable(itemId);
+        }
 
-    // Prevent non-numeric keys and zero
-    $('.qty_input').keypress(function(e) {
-        // Get the key code
-        var keyCode = e.which ? e.which : e.keyCode;
-        
-        // Allow only keys 1-9 (key codes 49-57)
-        if (keyCode < 49 || keyCode > 57) {
+        // Prevent non-numeric keys and zero
+        $('.qty_input').keypress(function(e) {
+            // Get the key code
+            var keyCode = e.which ? e.which : e.keyCode;
+            
+            // Allow only keys 1-9 (key codes 49-57)
+            if (keyCode < 49 || keyCode > 57) {
+                e.preventDefault();
+                return false;
+            }
+            return true;
+        });
+
+        // Check enable/disable every time the input is changed
+        $('.qty_input').change(function() {
+            var itemId = $(this).data('item_id');
+            handleEnableDisable(itemId);
+        });
+
+        // Increment quantity
+        $('.increment-qty').click(function(e) {
             e.preventDefault();
-            return false;
-        }
-        return true;
-    });
+            var itemId = $(this).data('item_id');
+            var closestInput = $(`#id_qty_${itemId}`);
+            var currentValue = parseInt(closestInput.val());
+            var maxAvailable = parseInt(closestInput.attr('max'));
+            
+            if (currentValue < maxAvailable) {
+                closestInput.val(currentValue + 1);
+                handleEnableDisable(itemId);
+            }
+        });
 
-    // Check enable/disable every time the input is changed
-    $('.qty_input').change(function() {
-        var itemId = $(this).data('item_id');
-        handleEnableDisable(itemId);
-    });
+        // Decrement quantity
+        $('.decrement-qty').click(function(e) {
+            e.preventDefault();
+            var itemId = $(this).data('item_id');
+            var closestInput = $(`#id_qty_${itemId}`);
+            var currentValue = parseInt(closestInput.val());
+            
+            if (currentValue > 1) {
+                closestInput.val(currentValue - 1);
+                handleEnableDisable(itemId);
+            }
+        });
 
-    // Increment quantity
-    $('.increment-qty').click(function(e) {
-        e.preventDefault();
-        var itemId = $(this).data('item_id');
-        var closestInput = $(`#id_qty_${itemId}`);
-        var currentValue = parseInt(closestInput.val());
-        var maxAvailable = parseInt(closestInput.attr('max'));
-        
-        if (currentValue < maxAvailable) {
-            closestInput.val(currentValue + 1);
-            handleEnableDisable(itemId);
-        }
-    });
-
-    // Decrement quantity
-    $('.decrement-qty').click(function(e) {
-        e.preventDefault();
-        var itemId = $(this).data('item_id');
-        var closestInput = $(`#id_qty_${itemId}`);
-        var currentValue = parseInt(closestInput.val());
-        
-        if (currentValue > 1) {
-            closestInput.val(currentValue - 1);
-            handleEnableDisable(itemId);
-        }
-    });
-
-    // Update stock display when navigating back
-    window.onpageshow = function(event) {
-        if (event.persisted) {
-            // Page was loaded from cache (back/forward navigation)
-            window.stockManager.updateStockDisplays();
-        }
-    };
-</script>
+        // Update stock display when navigating back
+        window.onpageshow = function(event) {
+            if (event.persisted) {
+                // Page was loaded from cache (back/forward navigation)
+                window.stockManager.updateStockDisplays();
+            }
+        };
+    </script>
 {% endblock %}
