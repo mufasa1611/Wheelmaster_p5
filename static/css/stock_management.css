@@ -1,4 +1,4 @@
-/* Toast Container */
+/* Toast Container and Styling */
 #toast-container {
     position: fixed;
     bottom: 20px;
@@ -6,7 +6,6 @@
     z-index: 1000;
 }
 
-/* Toast Styling */
 .toast {
     padding: 12px 24px;
     margin-bottom: 10px;
@@ -22,19 +21,11 @@
     transform: translateX(0);
 }
 
-.toast-success {
-    background-color: #28a745;
-}
+.toast-success { background-color: #28a745; }
+.toast-error { background-color: #dc3545; }
+.toast-info { background-color: #17a2b8; }
 
-.toast-error {
-    background-color: #dc3545;
-}
-
-.toast-info {
-    background-color: #17a2b8;
-}
-
-/* Stock Input Styling */
+/* Stock Management Styles */
 .stock-input {
     width: 80px;
     margin-right: 10px;
@@ -51,71 +42,47 @@
     gap: 5px;
 }
 
-/* Stock Level Indicators */
-[data-stock-qty].out-of-stock {
-    color: #ff0019 !important;
+/* Stock Indicator Styles */
+.stock-indicator {
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 1em;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background-color: rgba(240, 240, 240, 0.5);
+}
+
+/* Stock Level Colors */
+[data-stock-qty].out-of-stock,
+.stock-indicator.out-of-stock {
+    color: #ff0101;
+    background-color: rgba(167, 17, 17, 0.253);
+   
     font-weight: bold;
 }
 
-[data-stock-qty].low-stock {
-    color: #4d4807d8 !important;
+[data-stock-qty].low-stock,
+.stock-indicator.low-stock {
+    color: #1900ff;
+    background-color: rgba(64, 26, 151, 0.336);
     font-weight: bold;
 }
 
-[data-stock-qty].medium-stock {
-    color: #ff8800 !important;
+[data-stock-qty].medium-stock,
+.stock-indicator.medium-stock {
+    color: #ff7300;
+    background-color: hsla(32, 61%, 33%, 0.288);
     font-weight: bold;
 }
 
-[data-stock-qty].high-stock {
-    color: #28a745 !important;
+[data-stock-qty].high-stock,
+.stock-indicator.high-stock {
+    color: #12a133;
+    background-color: rgba(0, 255, 42, 0.178);
     font-weight: bold;
 }
 
-/* Product item stock status */
-.product-out-of-stock [data-stock-qty] {
-    color: #dc3545 !important;
-}
-
-.product-low-stock [data-stock-qty] {
-    color: #ff7707 !important;
-}
-
-/* Stock Quantity Indicators */
-.stock-qty, .reserved-qty, .available-qty {
-    font-weight: 600 !important;
-}
-
-.stock-qty { 
-    color: #28a745 !important; 
-}
-
-.reserved-qty { 
-    color: #072cff !important;
-    font-weight: bold !important;
-}
-
-.available-qty { 
-    color: #17a2b8 !important;
-}
-
-td.reserved-qty {
-    color: #072cff !important;
-    font-weight: bold !important;
-}
-
-td.stock-qty {
-    color: #28a745 !important;
-    font-weight: bold !important;
-}
-
-td.available-qty {
-    color: #17a2b8 !important;
-    font-weight: bold !important;
-}
-
-/* Stock Management Styles */
-
+/* Stock Count Display */
 .stock-count-field {
     background-color: rgba(240, 240, 240, 0.5);
     padding: 8px 12px;
@@ -126,55 +93,14 @@ td.available-qty {
 
 .stock-count-field strong {
     color: #333;
+    font-size: medium;
 }
 
-.stock-indicator {
-    display: inline-block;
-    margin-left: 5px;
-    font-size: 0.9em;
-    padding: 3px 8px;
-    border-radius: 12px;
+.stock-quantity-container {
+    margin-bottom: 1rem;
 }
 
-.stock-indicator::before {
-    content: "•";
-    margin-right: 5px;
-    font-size: 1.2em;
-}
-
-.stock-high {
-    background-color: rgba(40, 167, 69, 0.1);
-}
-
-.stock-high::before {
-    color: #28a745;
-}
-
-.stock-medium {
-    background-color: rgba(255, 193, 7, 0.1);
-}
-
-.stock-medium::before {
-    color: #ff7f07e3;
-}
-
-.stock-low {
-    background-color: rgba(220, 53, 69, 0.1);
-}
-
-.stock-low::before {
-    color: #fc8692;
-}
-
-.admin-controls {
-    margin-top: 10px;
-}
-
-.admin-controls button {
-    margin-right: 5px;
-}
-
-/* Base Table Styles */
+/* Table Styles */
 .inventory-table {
     width: 100%;
     min-width: 300px;
@@ -190,107 +116,15 @@ td.available-qty {
     text-align: center;
     word-wrap: break-word;
     overflow-wrap: break-word;
-    position: relative;
 }
 
-/* Column Widths - Using clamp for fluid sizing */
-.sku-col { width: clamp(50px, 8%, 100px); }
-.image-col { width: clamp(40px, 7%, 80px); }
-.name-col { 
-    width: clamp(80px, 20%, 200px);
-    text-align: left;
-}
-.category-col { width: clamp(60px, 12%, 150px); }
-.price-col { width: clamp(45px, 7%, 80px); }
-.qty-col { width: clamp(35px, 6%, 70px); }
-.actions-col { width: clamp(120px, 18%, 200px); }
-
-/* Product Name */
-.product-link {
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* Admin Controls */
+.admin-controls {
+    margin-top: 10px;
 }
 
-/* Image Styling */
-.inventory-img {
-    width: 100%;
-    height: auto;
-    max-width: clamp(30px, 100%, 100px);
-    object-fit: cover;
-    border-radius: 4px;
-    margin: 0 auto;
-    display: block;
-}
-
-/* Stock Actions Container */
-.stock-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: clamp(2px, 0.5vw, 8px);
-    justify-content: center;
-    align-items: center;
-}
-
-/* Stock Input */
-.stock-input {
-    width: clamp(40px, 5vw, 80px);
-    height: clamp(25px, 3vw, 35px);
-    padding: clamp(2px, 0.3vw, 6px);
-    font-size: inherit;
-    text-align: center;
-}
-
-/* Stock Label */
-.stock-label {
-    font-size: inherit;
-    margin: 0;
-    white-space: nowrap;
-}
-
-/* Action Buttons Container */
-.action-buttons {
-    display: flex;
-    gap: clamp(2px, 0.3vw, 5px);
-    flex-wrap: nowrap;
-    justify-content: center;
-}
-
-/* Buttons */
-.btn-sm {
-    padding: clamp(2px, 0.4vw, 8px) clamp(4px, 0.6vw, 12px);
-    font-size: inherit;
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    min-width: fit-content;
-}
-
-.btn-sm i {
-    font-size: clamp(11px, 1.1vw, 14px);
-}
-
-/* Price and Quantity Columns */
-.price-col,
-.qty-col {
-    text-align: center;
-    white-space: nowrap;
-}
-
-/* Category Text */
-.category-col {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Column Headers */
-.inventory-table th {
-    white-space: normal;
-    line-height: 1.2;
+.admin-controls button {
+    margin-right: 5px;
 }
 
 /* Responsive Adjustments */
