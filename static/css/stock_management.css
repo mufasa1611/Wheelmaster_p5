@@ -355,3 +355,79 @@
         font-size: 0.5rem;
     }
 }
+
+/* Product Description Styling */
+.description-container {
+    position: relative;
+    border: 3px solid rgba(128, 128, 128, 0.2);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    background: transparent;
+    transition: all 0.3s ease;
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2),
+                inset -2px -2px 5px rgba(255,255,255,0.1);
+}
+
+.description-title {
+    position: absolute;
+    top: -12px;
+    left: 15px;
+    background: transparent;
+    padding: 0 10px;
+    font-weight: bold;
+    color: #0080ff;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    backdrop-filter: blur(5px);
+}
+
+.description-content {
+    color: #555;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    position: relative;
+    padding-right: 60px;
+}
+
+.description-content.collapsed {
+    max-height: 80px;
+}
+
+.read-more-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: #0080ff;
+    font-size: 0.8rem;
+    padding: 0 10px;
+    cursor: pointer;
+    font-weight: 500;
+    position: absolute;
+    bottom: -12px;
+    right: 15px;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(5px);
+    outline: none;
+}
+
+.read-more-btn:focus {
+    outline: none;
+}
+
+.read-more-btn:hover {
+    color: #004c99;
+    font-size: 0.85rem;
+}
+
+.description-content.needs-expansion + .read-more-btn {
+    display: inline-block;
+}
+
+/* Add smooth transition for content below */
+.description-container + * {
+    transition: margin-top 0.3s ease;
+    margin-top: 15px;
+}

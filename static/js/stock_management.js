@@ -394,6 +394,36 @@ class StockManager {
 }
 
 // Initialize stock management when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     window.stockManager = new StockManager();
+
+    // Description Read More functionality
+    const readMoreBtn = document.querySelector('.read-more-btn');
+    const descriptionContent = document.querySelector('.description-content');
+    
+    if (readMoreBtn && descriptionContent) {
+        // Check if content needs expansion button
+        function checkContentHeight() {
+            const needsExpansion = descriptionContent.scrollHeight > 80;
+            if (needsExpansion) {
+                descriptionContent.classList.add('needs-expansion');
+                readMoreBtn.style.display = 'inline-block';
+            } else {
+                descriptionContent.classList.remove('needs-expansion', 'collapsed');
+                readMoreBtn.style.display = 'none';
+            }
+        }
+
+        // Initial check
+        setTimeout(checkContentHeight, 100); // Small delay to ensure content is rendered
+
+        readMoreBtn.addEventListener('click', function() {
+            const isCollapsed = descriptionContent.classList.contains('collapsed');
+            descriptionContent.classList.toggle('collapsed');
+            readMoreBtn.textContent = isCollapsed ? 'show less' : 'read more';
+        });
+
+        // Update on window resize
+        window.addEventListener('resize', checkContentHeight);
+    }
 });

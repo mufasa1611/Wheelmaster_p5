@@ -47,6 +47,16 @@
                         <small class="text-muted">No Rating</small>
                     {% endif %}
 
+                    {% if product.description %}
+                        <div class="description-container mt-3">
+                            <div class="description-title">Description</div>
+                            <div class="description-content collapsed">
+                                {{ product.description }}
+                            </div>
+                            <button class="read-more-btn" aria-label="Toggle description text">read more</button>
+                        </div>
+                    {% endif %}
+
                     <div class="d-flex align-items-center mt-2 mb-2">
                         {% if request.user.is_superuser %}
                             <div class="admin-controls">
