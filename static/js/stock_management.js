@@ -3,6 +3,7 @@ class StockManager {
         this.setupEventListeners();
         this.bagQuantities = {};
         this.loadBagQuantities();
+        this.initializeStockLevels();
     }
 
     loadBagQuantities() {
@@ -285,22 +286,24 @@ class StockManager {
     }
 
     updateStockIndicators(element, quantity) {
-        // Remove existing classes
-        element.classList.remove('in-stock', 'low-stock', 'out-of-stock', 'high-stock', 'medium-stock');
+        if (!element) return;
         
-        // Add appropriate class
+        // Remove existing classes
+        element.classList.remove('out-of-stock', 'low-stock', 'medium-stock', 'high-stock');
+        
+        // Add appropriate class based on quantity
         if (quantity <= 0) {
             element.classList.add('out-of-stock');
-            element.closest('.product-item')?.classList.add('product-out-of-stock');
+            console.log('Setting out-of-stock', quantity);
         } else if (quantity <= 5) {
             element.classList.add('low-stock');
-            element.closest('.product-item')?.classList.add('product-low-stock');
+            console.log('Setting low-stock', quantity);
         } else if (quantity <= 10) {
             element.classList.add('medium-stock');
-            element.closest('.product-item')?.classList.remove('product-out-of-stock', 'product-low-stock');
+            console.log('Setting medium-stock', quantity);
         } else {
             element.classList.add('high-stock');
-            element.closest('.product-item')?.classList.remove('product-out-of-stock', 'product-low-stock');
+            console.log('Setting high-stock', quantity);
         }
     }
 
@@ -372,6 +375,21 @@ class StockManager {
                 finalTotalElement.textContent = finalTotal.toFixed(2);
             }
         }
+    }
+
+    initializeStockLevels() {
+        const stockElements = document.querySelectorAll('[data-stock-qty]');
+        console.log('Found stock elements:', stockElements.length);
+        
+        stockElements.forEach(element => {
+            const text = element.textContent || '';
+            const match = text.match(/(\d+)/);
+            if (match) {
+                const quantity = parseInt(match[1]);
+                console.log('Initializing stock level:', quantity);
+                this.updateStockIndicators(element, quantity);
+            }
+        });
     }
 }
 
