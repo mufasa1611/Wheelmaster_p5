@@ -111,6 +111,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'products.middleware.AnonymousSessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
@@ -216,6 +217,19 @@ else:  # Local environment
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# Session Settings
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 7  # 1 week for registered users
+ANONYMOUS_SESSION_COOKIE_AGE = 60 * 60  # 1 hour for anonymous users
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Don't expire registered users' sessions on browser close
+
+# Anonymous session settings
+ANONYMOUS_SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Anonymous sessions expire on browser close
+
+# Session security settings
+SESSION_SECURITY_EXPIRE_AFTER = 60 * 30  # 30 minutes of inactivity
+SESSION_SECURITY_WARN_AFTER = 60 * 25    # Warn after 25 minutes
+
 # Authentication settings
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
@@ -247,15 +261,9 @@ ACCOUNT_RATE_LIMITS = {
 ACCOUNT_LOGOUT_ON_PASSWORD_CHANGE = True
 ACCOUNT_LOGOUT_ON_GET = False  # Require POST request to logout
 ACCOUNT_MAX_EMAIL_ADDRESSES = 1  # Limit number of email addresses per user
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_AGE = 60 * 60 * 24 * 10  # 10 days in seconds
 SESSION_COOKIE_SECURE = False  
 CSRF_COOKIE_SECURE = False    
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Don't expire when browser closes if remember me is checked
-
-# Session security settings
-SESSION_SECURITY_EXPIRE_AFTER = 60 * 30  # 30 minutes of inactivity
-SESSION_SECURITY_WARN_AFTER = 60 * 25    # Warn after 25 minutes
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  
 
 # Stripe Configuration
 STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', default='')
