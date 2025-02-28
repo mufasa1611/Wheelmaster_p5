@@ -1,10 +1,20 @@
+# Global rules
 User-agent: *
 Disallow: /admin/
-Disallow: /checkout/
 Disallow: /profile/
-Disallow: /account/
-Disallow: /orders/
+Disallow: /accounts/login/
+Disallow: /accounts/signup/
+Disallow: /accounts/password/
+Disallow: /bag/quantities/
 Disallow: /products/inventory/
+Disallow: /products/adjust_stock/
+Disallow: /products/stock/
+Disallow: /products/add/
+Disallow: /products/edit/
+Disallow: /products/delete/
+Allow: /products/
+Allow: /bag/
+Allow: /checkout/
 Allow: /
 
 # Specific rules for major bots
@@ -17,9 +27,17 @@ Allow: /
 User-agent: DuckDuckBot
 Allow: /
 
-# Prevent media crawling to save bandwidth
+# Image indexing rules
 User-agent: Googlebot-Image
-Disallow: /media/
+Allow: /media/
+Allow: /static/
+
+# Rate control for heavy crawlers
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
 
 # Sitemap location
 Sitemap: https://wheelmaster-fd0d6b0f7d27.herokuapp.com/sitemap.xml

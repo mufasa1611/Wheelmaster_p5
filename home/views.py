@@ -1,5 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from django.contrib import messages
+from django.conf import settings
+import os
 from .forms import NewsletterForm, ContactForm
 
 def index(request):
@@ -55,3 +57,14 @@ def custom_404(request, exception):
 
 def custom_500(request):
     return render(request, '500.html', status=500)
+
+def serve_sitemap(request):
+    """
+    Serve the sitemap.xml file
+    """
+    sitemap_path = os.path.join(settings.BASE_DIR, 'sitemap.xml')
+    if os.path.exists(sitemap_path):
+        with open(sitemap_path, 'r') as f:
+            content = f.read()
+        return HttpResponse(content, content_type='application/xml')
+    return HttpResponse('Sitemap not found', status=404)
