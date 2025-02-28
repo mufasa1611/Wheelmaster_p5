@@ -26,60 +26,174 @@
 .toast-info { background-color: #17a2b8; }
 
 /* Stock Management Styles */
+.inventory-table {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: transparent;
+    border-collapse: collapse;
+}
+
+.inventory-table th,
+.inventory-table td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Column Widths */
+.sku-col { width: 12%; }
+.image-col { width: 8%; }
+.name-col { width: 20%; }
+.category-col { width: 15%; }
+.price-col { width: 8%; }
+.qty-col { width: 8%; }
+.actions-col { width: 13%; }
+
+/* Image Styling */
+.inventory-img {
+    max-width: 50px;
+    max-height: 50px;
+    object-fit: contain;
+}
+
+/* Stock Input and Actions */
 .stock-input {
     width: 80px;
     margin-right: 10px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
 }
 
 .stock-actions {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: nowrap;
 }
 
 .action-buttons {
     display: flex;
     gap: 5px;
+    flex-wrap: nowrap;
+}
+
+.action-buttons button {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
 }
 
 /* Stock Indicator Styles */
 .stock-indicator {
     display: inline-block;
-    margin-left: 5px;
-    font-size: 1em;
-    padding: 3px 8px;
-    border-radius: 20px;
-    background-color: rgba(240, 240, 240, 0.5);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
+    margin: 0;
 }
 
-/* Stock Level Colors */
-[data-stock-qty].out-of-stock,
-.stock-indicator.out-of-stock {
-    color: #ff0101;
-    background-color: rgba(167, 17, 17, 0.253);
-   
-    font-weight: bold;
+.out-of-stock {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
 }
 
-[data-stock-qty].low-stock,
-.stock-indicator.low-stock {
-    color: #1900ff;
-    background-color: rgba(64, 26, 151, 0.336);
-    font-weight: bold;
+.low-stock {
+    color: #856404;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
 }
 
-[data-stock-qty].medium-stock,
-.stock-indicator.medium-stock {
-    color: #ff7300;
-    background-color: hsla(32, 61%, 33%, 0.288);
-    font-weight: bold;
+.in-stock {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
 }
 
-[data-stock-qty].high-stock,
-.stock-indicator.high-stock {
-    color: #12a133;
-    background-color: rgba(0, 255, 42, 0.178);
-    font-weight: bold;
+/* Responsive Design */
+@media (max-width: 992px) {
+    .inventory-table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .sku-col { width: 15%; }
+    .image-col { width: 10%; }
+    .name-col { width: 25%; }
+    .category-col { width: 20%; }
+    .price-col { width: 10%; }
+    .qty-col { width: 10%; }
+    .actions-col { width: 15%; }
+}
+
+@media (max-width: 768px) {
+    .stock-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .action-buttons {
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .action-buttons button {
+        flex: 1;
+    }
+
+    .stock-input {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+/* Table Hover Effect */
+.inventory-table tbody tr:hover {
+    background-color: rgba(0,0,0,.075);
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(0,0,0,.1);
+    border-left-color: #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Container Spacing */
+.container-fluid {
+    padding: 1.5rem;
+}
+
+/* Table Header */
+.thead-dark th {
+    color: #fff;
+    background-color: #343a40;
+    border-color: #454d55;
+}
+
+/* Form Controls */
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Button Styles */
+.btn-group-sm > .btn, .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    border-radius: 0.2rem;
 }
 
 /* Stock Count Display */
@@ -98,24 +212,6 @@
 
 .stock-quantity-container {
     margin-bottom: 1rem;
-}
-
-/* Table Styles */
-.inventory-table {
-    width: 100%;
-    min-width: 300px;
-    font-size: clamp(11px, 1vw, 14px);
-    table-layout: fixed;
-    margin-top: 2rem;
-}
-
-.inventory-table th,
-.inventory-table td {
-    padding: clamp(4px, 0.5vw, 12px);
-    vertical-align: middle;
-    text-align: center;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
 }
 
 /* Admin Controls */
@@ -390,6 +486,7 @@
     transition: max-height 0.3s ease-out;
     position: relative;
     padding-right: 60px;
+    white-space: pre-line;
 }
 
 .description-content.collapsed {
@@ -430,4 +527,55 @@
 .description-container + * {
     transition: margin-top 0.3s ease;
     margin-top: 15px;
+}
+
+/* Product Image Styling */
+.image-container {
+    position: relative;
+    border-radius: 10px;
+    padding: 15px;
+    background: transparent;
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2),
+                inset -2px -2px 5px rgba(255,255,255,0.1);
+    border: 3px solid rgba(128, 128, 128, 0.2);
+}
+
+.image-container img {
+    width: 100%;
+    height: 400px; /* Fixed height */
+    object-fit: contain; /* Maintain aspect ratio */
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.image-container:hover img {
+    transform: scale(1.02);
+}
+
+/* Ensure responsive behavior */
+@media (max-width: 768px) {
+    .image-container img {
+        height: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .image-container img {
+        height: 250px;
+    }
+}
+
+/* Product Size Select Styling */
+#id_product_size {
+    width: auto;
+    min-width: fit-content;
+    font-size: 0.9rem;
+    padding-right: 25px; /* Space for dropdown arrow */
+}
+
+@media (max-width: 400px) {
+    #id_product_size {
+        font-size: 0.85rem;
+        padding: 0.375rem 25px 0.375rem 0.5rem;
+    }
 }
