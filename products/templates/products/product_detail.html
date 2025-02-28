@@ -21,11 +21,11 @@
                 <div class="image-container my-5">
                     {% if product.image %}
                         <a href="{{ product.image.url }}" target="_blank">
-                            <img class="card-img-top img-fluid" src="{{ product.image.url }}" alt="{{ product.name }}">
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
                         </a>
                     {% else %}
                         <a href="">
-                            <img class="card-img-top img-fluid" src="{{ MEDIA_URL }}noimage.png" alt="{{ product.name }}">
+                            <img src="{{ MEDIA_URL }}noimage.png" alt="{{ product.name }}">
                         </a>
                     {% endif %}
                 </div>
@@ -51,7 +51,7 @@
                         <div class="description-container mt-3">
                             <div class="description-title">Description</div>
                             <div class="description-content collapsed">
-                                {{ product.description }}
+                                {{ product.description|linebreaks }}
                             </div>
                             <button class="read-more-btn" aria-label="Toggle description text">read more</button>
                         </div>
@@ -80,8 +80,8 @@
                             {% if s %}
                                 <div class="col-12">
                                     <p class="d-inline-block mb-0"><strong>Size:</strong></p>
-                                    <select class="form-control d-inline-block rounded-0 w-25 ml-2" name="product_size" id="id_product_size" required>
-                                        <option value="" disabled selected>Select Size</option>
+                                    <select class="form-control d-inline-block rounded-0 ml-2" style="width: auto;" name="product_size" id="id_product_size" required>
+                                        <option value="" disabled selected>Select</option>
                                         <option value="100ml">100ml</option>
                                         <option value="250ml">250ml</option>
                                         <option value="500ml">500ml</option>
