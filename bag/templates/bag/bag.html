@@ -15,7 +15,8 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container" data-csrf="{{ csrf_token }}">
+    {% csrf_token %}
+    <div class="container">
         <div class="row">
             <div class="col">
                 <h2 class="text-center my-5">Shopping Bag</h2>
@@ -58,9 +59,10 @@
                                                        name="quantity"
                                                        value="{{ item.quantity }}"
                                                        min="1"
-                                                       max="{{ item.product.available_qty|add:item.quantity }}"
+                                                       max="{{ item.product.stock_qty }}"
                                                        data-item_id="{{ item.item_id }}"
                                                        data-size="{{ item.size|default:'' }}"
+                                                       data-current-qty="{{ item.quantity }}"
                                                        data-url="{% url 'adjust_bag' item.item_id %}">
                                                 <button class="increment-qty btn btn-sm btn-secondary rounded-end"
                                                         type="button"

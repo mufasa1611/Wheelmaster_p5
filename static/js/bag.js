@@ -1,7 +1,34 @@
- // Update quantity on change
+ // Set up CSRF token for all AJAX requests
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Set up AJAX CSRF token
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    }
+});
+
+// Update quantity on change
 function updateQuantity(itemId, size, quantity) {
     var url = `/bag/adjust/${itemId}/`;
+    var csrfToken = getCookie('csrftoken');
     var data = {
+        'csrfmiddlewaretoken': csrfToken,
         'quantity': quantity
     };
     if (size) {
@@ -57,7 +84,9 @@ $(document).ready(function() {
         var itemId = $(this).data('item_id');
         var size = $(this).data('size');
         var url = `/bag/remove/${itemId}/`;
+        var csrfToken = getCookie('csrftoken');
         var data = {
+            'csrfmiddlewaretoken': csrfToken,
             'product_size': size
         };
 
@@ -105,13 +134,19 @@ $(document).ready(function() {
         var size = $(this).data('size') || '';
         var closestInput = $(`.qty_input[data-item_id='${itemId}'][data-size='${size}']`);
         var currentValue = parseInt(closestInput.val());
-        var maxAvailable = parseInt(closestInput.attr('max'));
+        var maxStock = parseInt(closestInput.attr('max'));
+        var currentQty = parseInt(closestInput.data('current-qty'));
         
-        if (currentValue < maxAvailable) {
+        // Calculate how many more items we can add
+        var availableToAdd = maxStock - currentQty;
+        
+        if (availableToAdd > 0 && currentValue < maxStock) {
             currentValue += 1;
             closestInput.val(currentValue);
             handleEnableDisable(itemId, size);
             updateQuantity(itemId, size, currentValue);
+        } else {
+            alert('Sorry, no more stock available for this item.');
         }
     });
 
