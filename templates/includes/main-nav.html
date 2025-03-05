@@ -2,76 +2,51 @@
 
 <div class="collapse navbar-collapse" id="main-nav">
     <ul class="navbar-nav w-auto mx-auto">
-        <li class="nav-item d-block d-md-none">
-            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="{% url 'home' %}" id="home-link">
-                Home
+        <li class="nav-item">
+            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="{% url 'products' %}" id="all-products-link">
+                ALL PRODUCTS
             </a>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" id="all-products-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                All Products
-            </a>
-            <div class="dropdown-menu border-0" aria-labelledby="all-products-link">
-                <a href="{% url 'products' %}?sort=price&direction=asc" class="dropdown-item">By Price</a>
-                <a href="{% url 'products' %}?sort=rating&direction=desc" class="dropdown-item ">By Rating</a>
-                <a href="{% url 'products' %}?sort=category&direction=asc" class="dropdown-item ">By Category</a>
-                <a href="{% url 'products' %}" class="dropdown-item">All Products</a>
-            </div>
         </li>
 
-        <li class="nav-item dropdown">
-            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" id="equipment-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Equipment
-            </a>
-            <div class="dropdown-menu border-0" aria-labelledby="equipment-link">
-                <a href="{% url 'products' %}?category=wheelbarrows" class="dropdown-item">Wheelbarrows</a>
-                <a href="{% url 'products' %}?category=transport_trolleys" class="dropdown-item">Transport Trolleys</a>
-                <a href="{% url 'products' %}?category=scaffolding" class="dropdown-item">Scaffolding</a>
-                <a href="{% url 'products' %}?category=concrete_mixers" class="dropdown-item">Concrete Mixers</a>
-                <a href="{% url 'products' %}?category=accessories" class="dropdown-item">Accessories</a>
-                <a href="{% url 'products' %}" class="dropdown-item">All Products</a>
-            </div>
-        </li>
-        
-        <li class="nav-item dropdown">
-            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" id="construction-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Construction Tools
-            </a>
-            <div class="dropdown-menu border-0" aria-labelledby="construction-link">
-                <a href="{% url 'products' %}?category=wheelbarrows" class="dropdown-item">Wheelbarrows</a>
-                <a href="{% url 'products' %}?category=transport_trolleys" class="dropdown-item">Transport Trolleys</a>
-                <a href="{% url 'products' %}?category=mixing_tools" class="dropdown-item">Mixing Tools</a>
-                <a href="{% url 'products' %}?category=ladders_platforms" class="dropdown-item">Ladders & Platforms</a>
-                <a href="{% url 'products' %}?category=safety_gear" class="dropdown-item">Safety Gear</a>
-                <a href="{% url 'products' %}?category=construction_tools" class="dropdown-item">All Construction Tools</a>
-            </div>
-        </li>
-        
-        <li class="nav-item dropdown">
-            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" id="specials-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Special Offers
-            </a>
-            <div class="dropdown-menu border-0" aria-labelledby="specials-link">
-                <a href="{% url 'products' %}?category=seasonal_deals" class="dropdown-item">Seasonal Deals</a>
-                <a href="{% url 'products' %}?category=bulk_discounts" class="dropdown-item">Bulk Purchase Discounts</a>
-                <a href="{% url 'products' %}?category=clearance" class="dropdown-item">Clearance</a>
-                <a href="{% url 'products' %}?category=special_offers" class="dropdown-item">All Specials</a>
-            </div>
-        </li>
-
-        <li class="nav-item dropdown">
-            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" id="about-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                About Us
-            </a>
-            <div class="dropdown-menu border-0" aria-labelledby="about-link">
-                <a href="{% url 'who_we_are' %}" class="dropdown-item">Who We Are</a>
-                <a href="{% url 'contact' %}" class="dropdown-item">Contact Us</a>
-                <a href="{% url 'newsletter_signup' %}" class="dropdown-item">Newsletter</a>
-            </div>
-        </li>
+        {% for main_category, children in nav_categories.items %}
+            <li class="nav-item dropdown">
+                <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" 
+                   id="{{ main_category.name|lower }}-link" data-toggle="dropdown" 
+                   aria-haspopup="true" aria-expanded="false">
+                    {{ main_category.friendly_name|upper }}
+                </a>
+                <div class="dropdown-menu border-0" aria-labelledby="{{ main_category.name|lower }}-link">
+                    <a href="{% url 'products' %}?category={{ main_category.name }}" class="dropdown-item">
+                        All {{ main_category.friendly_name }}
+                    </a>
+                    {% for child in children %}
+                        {% if child.children.exists %}
+                            <div class="dropdown-submenu">
+                                <a href="{% url 'products' %}?category={{ child.name }}" class="dropdown-item">
+                                    {{ child.friendly_name }}
+                                </a>
+                                <div class="dropdown-menu">
+                                    {% for grandchild in child.get_children %}
+                                        {% if grandchild.is_active %}
+                                            <a href="{% url 'products' %}?category={{ grandchild.name }}" class="dropdown-item">
+                                                {{ grandchild.friendly_name }}
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <a href="{% url 'products' %}?category={{ child.name }}" class="dropdown-item">
+                                {{ child.friendly_name }}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </li>
+        {% endfor %}
     </ul>
 </div>
 
 {% block postloadjs %}
-<script src="{% static 'js/main-nav.js' %}"></script>
+    <script src="{% static 'js/main-nav.js' %}"></script>
 {% endblock %}
