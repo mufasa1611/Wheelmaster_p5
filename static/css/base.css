@@ -4,7 +4,6 @@ html {
 
 body {
     background: url('https://res.cloudinary.com/dzttk2ryf/image/upload/v1740353708/media/background1.webp') no-repeat center center fixed;
-
     background-size: cover;
     display: flex;
     flex-direction: column;
@@ -22,7 +21,6 @@ main {
     padding-top: 75px; 
 }
 
-/* from Bulma */
 .icon {
     align-items: center;
     display: inline-flex;
@@ -33,14 +31,14 @@ main {
 
 .logo-font {
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: .1em;
+    text-shadow: #060025;
 }
 
 .main-logo-link {
     width: fit-content;
 }
 
-/* Navigation Styles */
 .navbar-nav .nav-link {
     color: #555;
     font-size: 1rem;
@@ -49,14 +47,14 @@ main {
 }
 
 .navbar-nav .nav-link:hover {
-    color: #000 !important;
+    color: #000;
 }
 
 .dropdown-menu {
     margin-top: 0;
-    background-color: #fff;
-    border: none;
+    background: white;
     border-radius: 0;
+    border: 1px solid rgba(0,0,0,.15);
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
@@ -69,8 +67,6 @@ main {
 }
 
 .dropdown-item:hover {
-    background-color: #f8f9fa;
-    color: #000;
     transform: translateX(5px);
 }
 
@@ -79,13 +75,11 @@ main {
     font-size: 0.8em;
 }
 
-
 main.main-bg {
     margin-top: 0; 
     min-height: calc(100vh - 0px); 
 }
 
-/* Buttons */
 .shop-now-button {
     background: black;
     color: white;
@@ -100,7 +94,6 @@ main.main-bg {
 .btn-outline-black {
     background: white;
     color: black !important;
-  
     border: 1px solid black;
 }
 
@@ -133,21 +126,16 @@ main.main-bg {
     background: #000 !important;
 }
 
-.w-35 {
-    width: 35% !important;
-}
-
 .overlay {
     height: 100%;
     width: 100%;
     top: 0;
     left: 0;
     position: fixed;
-
     z-index: -1;
 }
 
-a.category-badge>span.badge:hover {
+a.category-badge > span.badge:hover {
     background: #212529 !important;
     color: #fff !important;
 }
@@ -155,19 +143,16 @@ a.category-badge>span.badge:hover {
 .product-description {
     word-wrap: break-word;
     white-space: pre-wrap;
-    overflow-wrap: break-word;
-    max-width: 80%;
+    font-size: 1rem;
     line-height: 1.3rem;
     margin-bottom: 2rem;
     color: #060025;
- 
 }
 
 .description-title {
-    font-size: 1.25rem;
-    text-decoration: underline;
+    font-size: 1.5rem;
     font-weight: bold;
-    color: #333;
+    color: #060025;
     margin-bottom: 2rem;
 }
 
@@ -179,7 +164,6 @@ a.category-badge>span.badge:hover {
     right: 100px;
 }
 
-
 .btt-link,
 .update-link,
 .remove-item {
@@ -187,17 +171,16 @@ a.category-badge>span.badge:hover {
 }
 
 .btn-btt {
-    position: static;
+    position: fixed;
     bottom: 20px;
-    float: right;
-    color: blue;
+    right: 20px;
+    color: #555;
     cursor: pointer;
 }
 
 .btn-btt i {
-    font-size: 1.5em;
+    font-size: 1.5rem;
 }
-
 
 input[name='q']::placeholder {
     color: #aab7c4;
@@ -206,8 +189,6 @@ input[name='q']::placeholder {
 .text-rate {
     -webkit-text-fill-color: #c15a00;
 }
-
-/* -------------- bootstrap toasts -----------------*/
 
 .message-container {
     position: fixed;
@@ -219,10 +200,12 @@ input[name='q']::placeholder {
 .custom-toast {
     overflow: visible;
 }
+
 .toast.custom-toast {
     opacity: 1 !important;
     transition: all 0.3s ease;
 }
+
 .toast-header.bg-success {
     background-color: #28a745 !important;
 }
@@ -231,8 +214,6 @@ input[name='q']::placeholder {
     height: 2px;
 }
 
-
-/* from CSS-tricks.com: https://css-tricks.com/snippets/css/css-triangle/ */
 .arrow-up {
     width: 0;
     height: 0;
@@ -244,7 +225,6 @@ input[name='q']::placeholder {
     right: 36px;
 }
 
-/* Convenience classes - colors copied from Bootstrap */
 .arrow-primary {
     border-bottom-color: #007bff !important;
 }
@@ -283,7 +263,6 @@ input[name='q']::placeholder {
     overflow-y: auto;
 }
 
-/* Allauth form formatting */
 .allauth-form-inner-content {
     background-color: rgba(248, 249, 250, 0.15);
     border: 2px solid rgba(0, 0, 0, 0.1);
@@ -304,34 +283,13 @@ input[name='q']::placeholder {
     border-radius: 0;
 }
 
-.allauth-form-inner-content .form-control {
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #212529;
-}
-
-.allauth-form-inner-content .form-control:focus {
-    border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.allauth-form-inner-content label:not([for='id_remember']) {
-    display: none;
-}
-
-.allauth-form-inner-content input::placeholder {
-    color: #6c757d;
-}
-
-.allauth-form-inner-content .form-group {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    margin-bottom: 1rem;
-    border-radius: 0;
+.allauth-form-inner-content a {
+    color: #17a2b8;
+    text-decoration: none;
 }
 
 .allauth-form-inner-content button,
 .allauth-form-inner-content input[type='submit'] {
-    /* btn */
     display: inline-block;
     font-weight: 400;
     color: #fff;
@@ -348,8 +306,6 @@ input[name='q']::placeholder {
     line-height: 1.5;
     border-radius: 0;
     width: 50%;
-
-    /* standard bootstrap btn transitions */
     transition: color .3s ease-in-out, background-color .3s ease-in-out, 
     border-color .3s ease-in-out, box-shadow .3s ease-in-out;
 }
@@ -361,111 +317,10 @@ input[name='q']::placeholder {
     border-color: #646262;
 }
 
-.allauth-form-inner-content a {
-    color: #17a2b8;
-    text-decoration: none;
-}
-
-/* Shopping Bag Styles */
 .table-responsive {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
-
-/* ------------------ Media Queries -------------- */
-
-/* Slightly larger container on xl screens */
-@media (min-width: 1200px) {
-    .container {
-        max-width: 80%;
-    }
-}
-
-/* Add margin for fixed navbar */
-@media (min-width: 992px) {
-    .allauth-form-row {
-        margin-top: 8rem;
-    }
-}
-
-/* fixed top navbar only on medium and up */
-@media (min-width: 992px) {
-    .fixed-top-desktop-only {
-        position: fixed;
-        top: 0;
-        right: 0;
-        left: 0;
-        z-index: 1030;
-    }
-
-    .header-container {
-        padding-top: 100px;
-    }
-}
-
-/* pad the top a bit when navbar is collapsed on mobile */
-@media (max-width: 991px) {
-    main {
-        padding-top: 50px;
-    }
-
-    .header-container {
-        padding-top: 90px;
-    }
-
-    body {
-        height: calc(100vh - 116px);
-    }
-
-    .display-4.logo-font.text-black {
-        font-size: 2rem;
-    }
-
-    .nav-link {
-        padding: 0.15rem;
-    }
-
-    .nav-link i.fa-lg {
-        font-size: 1rem;
-    }
-
-    .navbar-toggler {
-        padding: .6rem .6rem;
-        font-size: 1rem;
-    }
-
-    #delivery-banner h4 {
-        font-size: .9rem;
-    }
-
-    .btn.btn-outline-black.rounded-0,
-    .btn.btn-black.rounded-0 {
-        padding: .375rem .375rem;
-    }
-
-    .btn.btn-outline-black.rounded-0.btn-lg,
-    .btn.btn-black.rounded-0.btn-lg {
-        padding: .375rem .375rem;
-        font-size: .75rem;
-    }
-
-    .increment-qty,
-    .decrement-qty {
-        padding: .25rem .5rem !important;
-    }
-
-    .allauth-form-inner-content {
-        background-color: rgba(248, 249, 250, 0.15);
-        border: 2px solid rgba(0, 0, 0, 0.1);
-        box-shadow: 0 0 15px rgba(0,0,0,0.5);
-        backdrop-filter: blur(5px);
-        padding: 1rem;
-        border-radius: 0.25rem;
-        margin-top: 6rem;
-    }
-}
-
-/* Product Form */
 
 .btn-file {
     position: relative;
@@ -531,9 +386,152 @@ input[name='q']::placeholder {
     font-size: 16px;
 }
 
-/* Shopping bag on very small screens */
+/* Navigation and Dropdown Styles */
+.navbar-nav .nav-link {
+    color: #555;
+    font-size: 1rem;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #000;
+}
+
+.dropdown-menu {
+    margin-top: 0;
+    background: white;
+    border-radius: 0;
+    border: 1px solid rgba(0,0,0,.15);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -1px;
+    display: none;
+}
+
+.dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu > a::after {
+    display: inline-block;
+    margin-left: 0.5em;
+    content: "▸";
+}
+
+.dropdown-item {
+    color: #555;
+    padding: 0.5rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+    transition: all 0.3s ease;
+}
+
+.dropdown-item:hover {
+    color: #000;
+    transform: translateX(5px);
+}
+
+/* Responsive Navigation */
+@media (max-width: 991px) {
+    .dropdown-submenu .dropdown-menu {
+        left: 0;
+        margin-left: 1rem;
+        margin-right: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .dropdown-submenu > a::after {
+        transform: rotate(90deg);
+    }
+}
+
+@media (min-width: 1200px) {
+    .container {
+        max-width: 80%;
+    }
+}
+
+@media (min-width: 992px) {
+    .fixed-top-desktop-only {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 1030;
+    }
+
+    .header-container {
+        padding-top: 100px;
+    }
+}
+
+@media (max-width: 991px) {
+    main {
+        padding-top: 50px;
+    }
+
+    .header-container {
+        padding-top: 90px;
+    }
+
+    body {
+        height: calc(100vh - 116px);
+    }
+
+    .display-4.logo-font.text-black {
+        font-size: 2rem;
+    }
+
+    .nav-link {
+        padding: 0.15rem;
+    }
+
+    .nav-link i.fa-lg {
+        font-size: 1rem;
+    }
+
+    .navbar-toggler {
+        padding: .6rem .6rem;
+        font-size: 1rem;
+    }
+
+    #delivery-banner h4 {
+        font-size: .9rem;
+    }
+
+    .btn.btn-outline-black.rounded-0,
+    .btn.btn-black.rounded-0 {
+        padding: .375rem .375rem;
+    }
+
+    .btn.btn-outline-black.rounded-0.btn-lg,
+    .btn.btn-black.rounded-0.btn-lg {
+        padding: .375rem .375rem;
+        font-size: .75rem;
+    }
+
+    .increment-qty,
+    .decrement-qty {
+        padding: .25rem .5rem !important;
+    }
+
+    .allauth-form-inner-content {
+        padding: 1rem;
+        margin-top: 6rem;
+    }
+}
+
 @media (max-width: 470px) and (min-width: 200px) {
-    /* Shopping bag table adjustments */
     .table td {
         padding: 0.5rem;
         font-size: 0.9rem;
