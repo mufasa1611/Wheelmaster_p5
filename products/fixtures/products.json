@@ -1,87 +1,194 @@
 [
     {
-        "pk": 1,
-        "model": "products.product",
-        "fields": {
-            "sku": "WHLCHR001",
-            "name": "Standard Wheelbarrows",
-            "description": "A lightweight and durable Wheelbarrows suitable for outdoor use.",
-            "price": 150.0,
-            "category": 1,  
-            "rating": 4.6,
-            "image_url": "/media/lwheel.png",
-            "image": "lwheel.png"
-        }
+      "pk": 1,
+      "model": "products.product",
+      "fields": {
+        "sku": "Z029/10/00/106",
+        "name": "Classic Gardener",
+        "description": "A robust, lightweight wheelbarrow for general gardening tasks.",
+        "price": 40.0,
+        "category": 6,
+        "rating": 4.5,
+        "image_url": "/media/pdf-image-023.jpg",
+        "image": "pdf-image-023.jpg",
+        "has_sizes": false,
+        "stock_qty": 10
+      }
     },
     {
-        "pk": 2,
-        "model": "products.product",
-        "fields": {
-            "sku": "TRSPCRT001",
-            "name": "Heavy-Duty Transport Cart",
-            "description": "Robust transport cart with heavy-duty wheels for industrial use.",
-            "price": 300.0,
-            "category": 2,  
-            "rating": 4.6,
-            "image_url": "/media/transport_cart1.png",
-            "image": "transport_cart.png"
-        }
+      "pk": 2,
+      "model": "products.product",
+      "fields": {
+        "sku": "Z030/20/00/107",
+        "name": "Heavy Hauler",
+        "description": "Durable construction for heavy-duty transport.",
+        "price": 60.0,
+        "category": 6,
+        "rating": 4.7,
+        "image_url": "/media/pdf-image-025.jpg",
+        "image": "pdf-image-025.jpg",
+        "has_sizes": false,
+        "stock_qty": 8
+      }
     },
     {
-        "pk": 3,
-        "model": "products.product",
-        "fields": {
-            "sku": "HDWHEEL001",
-            "name": "Heavy-Duty Wheel",
-            "description": "A wheel designed to handle heavy loads, suitable for industrial trolleys and carts.",
-            "price": 45.0,
-            "category": 3,  
-            "rating": 4.7,
-            "image_url": "/media/lwheel.png",
-            "image": "lwheel.png"
-        }
+      "pk": 3,
+      "model": "products.product",
+      "fields": {
+        "sku": "Z031/10/00/201",
+        "name": "Peter",
+        "description": "A colorful, sturdy wheelbarrow for children.",
+        "price": 20.0,
+        "category": 7,
+        "rating": 4.8,
+        "image_url": "/media/pdf-image-045.jpg",
+        "image": "pdf-image-045.jpg",
+        "has_sizes": false,
+        "stock_qty": 15
+      }
     },
     {
-        "pk": 4,
-        "model": "products.product",
-        "fields": {
-            "sku": "LTWHEEL001",
-            "name": "Lightweight Mobility Wheel",
-            "description": "Lightweight wheel for mobility aids and lightweight carts.",
-            "price": 30.0,
-            "category": 4,  
-            "rating": 3.0,
-            "image_url": "/media/lwheel.png",
-            "image": "lwheel.png"
-        }
+      "pk": 4,
+      "model": "products.product",
+      "fields": {
+        "sku": "Z032/15/00/202",
+        "name": "Heidi",
+        "description": "Small, lightweight wheelbarrow perfect for kids.",
+        "price": 18.0,
+        "category": 7,
+        "rating": 4.6,
+        "image_url": "/media/pdf-image-178.jpg",
+        "image": "pdf-image-178.jpg",
+        "has_sizes": false,
+        "stock_qty": 12
+      }
     },
     {
-        "pk": 5,
-        "model": "products.product",
-        "fields": {
-            "sku": "KIDSWB001",
-            "name": "Junior Garden Helper Wheelbarrow",
-            "description": "Colorful and sturdy wheelbarrow designed for young gardeners. Perfect for helping in the garden or playing in the sandbox.",
-            "price": 34.99,
-            "category": 5,
-            "rating": 4.5,
-            "image_url": "/media/kids_wheelbarrow.png",
-            "image": "kids_wheelbarrow.png"
-        }
+      "pk": 5,
+      "model": "products.product",
+      "fields": {
+        "sku": "Z040/20/00/301",
+        "name": "Easy Fold",
+        "description": "Compact, foldable trolley for storage efficiency.",
+        "price": 50.0,
+        "category": 8,
+        "rating": 4.4,
+        "image_url": "/media/pdf-image-193.jpg",
+        "image": "pdf-image-193.jpg",
+        "has_sizes": false,
+        "stock_qty": 20
+      }
     },
     {
-        "pk": 6,
-        "model": "products.product",
-        "fields": {
-            "sku": "MAINTKIT001",
-            "name": "Maintenance Kit",
-            "description": "Comprehensive maintenance kit for wheel and cart care.",
-            "price": 25.0,
-            "category": 6,  
-            "rating": 5.0,
-            "image_url": "/media/z006.png",
-            "image": "z006.png"
-        }
+      "pk": 6,
+      "model": "products.product",
+      "fields": {
+        "sku": "Z041/25/00/302",
+        "name": "Travel Mate",
+        "description": "Lightweight trolley designed for travel purposes.",
+        "price": 55.0,
+        "category": 8,
+        "rating": 4.5,
+        "image_url": "/media/pdf-image-206.jpg",
+        "image": "pdf-image-206.jpg",
+        "has_sizes": false,
+        "stock_qty": 18
+      }
+    },
+    {
+      "pk": 7,
+      "model": "products.product",
+      "fields": {
+        "sku": "Z042/30/00/401",
+        "name": "Titan Cart",
+        "description": "A heavy-duty trolley for industrial use.",
+        "price": 90.0,
+        "category": 9,
+        "rating": 4.8,
+        "image_url": "/media/pdf-image-228.jpg",
+        "image": "pdf-image-228.jpg",
+        "has_sizes": true,
+        "stock_qty": 10
+      }
+    },
+    {
+      "pk": 8,
+      "model": "products.product",
+      "fields": {
+        "sku": "Z043/35/00/402",
+        "name": "Load Pro",
+        "description": "Designed for moving heavy materials over rough terrain.",
+        "price": 100.0,
+        "category": 9,
+        "rating": 4.7,
+        "image_url": "/media/pdf-image-236.jpg",
+        "image": "pdf-image-236.jpg",
+        "has_sizes": true,
+        "stock_qty": 8
+      }
+    },
+    {
+      "pk": 9,
+      "model": "products.product",
+      "fields": {
+        "sku": "Z050/40/00/501",
+        "name": "Quick-Build Scaffold",
+        "description": "Modular scaffolding for easy assembly.",
+        "price": 120.0,
+        "category": 12,
+        "rating": 4.6,
+        "image_url": "/media/pdf-image-247.jpg",
+        "image": "pdf-image-247.jpg",
+        "has_sizes": true,
+        "stock_qty": 5
+      }
+    },
+    {
+      "pk": 10,
+      "model": "products.product",
+      "fields": {
+        "sku": "Z051/45/00/502",
+        "name": "Pro-Level Scaffold",
+        "description": "Premium scaffolding for professional use.",
+        "price": 150.0,
+        "category": 12,
+        "rating": 4.9,
+        "image_url": "/media/pdf-image-266.jpg",
+        "image": "pdf-image-266.jpg",
+        "has_sizes": true,
+        "stock_qty": 4
+      }
+    },
+    {
+      "pk": 11,
+      "model": "products.product",
+      "fields": {
+        "sku": "Z060/50/00/601",
+        "name": "Rapid Mixer",
+        "description": "Portable concrete mixer with fast operation.",
+        "price": 200.0,
+        "category": 13,
+        "rating": 4.8,
+        "image_url": "/media/rapid_mixer.jpg",
+        "image": "rapid_mixer.jpg",
+        "has_sizes": false,
+        "stock_qty": 6
+      }
+    },
+    {
+      "pk": 12,
+      "model": "products.product",
+      "fields": {
+        "sku": "L-LZ140",
+        "name": "Durable Mixer",
+        "description": "Long-lasting concrete mixer for large projects.",
+        "price": 250.0,
+        "category": 13,
+        "rating": 4.7,
+        "image_url": "/media/durable_mixer.jpg",
+        "image": "durable_mixer.jpg",
+        "has_sizes": false,
+        "stock_qty": 4
+      }
     }
-    
 ]
