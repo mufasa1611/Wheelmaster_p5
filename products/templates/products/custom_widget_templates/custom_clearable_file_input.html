@@ -1,17 +1,42 @@
 {% if widget.is_initial %}
     <p>{{ widget.initial_text }}:</p>
-    <a href="{{ widget.value.url }}">
-        <img width="160" height="120" class="rounded shadow-sm" src="{{ widget.value.url }}">
-    </a>
+    <div id="image-preview">
+        <a href="{{ widget.value.url }}">
+            <img width="160" height="120" class="rounded shadow-sm" src="{{ widget.value.url }}">
+        </a>
+    </div>
     {% if not widget.required %}
         <div class="custom-control custom-checkbox mt-2">
             <input class="custom-control-input" type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}">
             <label class="custom-control-label text-danger" for="{{ widget.checkbox_id }}">{{ widget.clear_checkbox_label }}</label>
         </div>
     {% endif %}<br>
-    {{ widget.input_text }}
 {% endif %}
 <span class="btn btn-black rounded-0 btn-file">
     Select Image <input id="new-image" type="{{ widget.type }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
 </span>
 <strong><p class="text-danger" id="filename"></p></strong>
+
+<script>
+    $('#new-image').change(function() {
+        var file = $('#new-image')[0].files[0];
+        if (file) {
+            $('#filename').text(`Image will be changed to: ${file.name}`);
+            // When new file is selected, uncheck the clear checkbox
+            $('#{{ widget.checkbox_id }}').prop('checked', false);
+            $('#image-preview').hide();
+        }
+    });
+
+    // Handle remove checkbox click
+    $('#{{ widget.checkbox_id }}').change(function() {
+        if(this.checked) {
+            $('#image-preview').hide();
+            // When clear is checked, clear the file input
+            $('#new-image').val('');
+            $('#filename').text('');
+        } else {
+            $('#image-preview').show();
+        }
+    });
+</script>
