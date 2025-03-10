@@ -3,11 +3,13 @@
 {% load crispy_forms_tags %}
 
 {% block page_header %}
-    <div class="container header-container">
+    <div class="container header-container" style="margin-top: 80px;">
         <div class="row">
-            <div class="col-12 text-center py-4 ">
-                <h1 class="display-5 text-black ">We'd Love to Hear From You!</h1>
+            <div class="col-12 text-center py-3 ">
+                <h1 class="display-5 text-black">We'd Love to Hear From You!</h1>
                 <p class="lead mb-2">Feel free to reach out with any questions or feedback.</p>
+                
+              
             </div>
         </div>
     </div>
@@ -15,9 +17,9 @@
 
 {% block content %}
     <div class="container">
-        <div class="row d-flex justify-content-center align-items-start">
-            <div class="col-12 col-lg-8 ">
-                <h4 class="text-black text-center ">Send Us a Message</h4>
+        <div class="row d-flex justify-content-center ">
+            <div class="col-12 col-lg-8 nb5 allauth-form-inner-content">
+                
                 {% if messages %}
                     {% for message in messages %}
                         <div class="alert alert-{{ message.tags }}">{{ message }}</div>
@@ -25,6 +27,8 @@
                 {% endif %}
                 
                 <!-- Contact Form Section -->
+                <h4 class="text-black text-center">Send Us a Message</h4>
+                <hr> 
                 <form method="POST" action="{% url 'contact' %}" class="p-4 border rounded shadow-sm bg-light">
     {% csrf_token %}
     {{ form|crispy }}
@@ -32,12 +36,17 @@
     <button type="submit" class="btn btn-primary rounded-0 w-50">Send Message</button>
 </div>
 </form>
+<hr> <!-- Divider line -->
+
+
             </div>
 
             <!-- Address Section -->
-              <div class="col-12 col-lg-8 d-flex flex-column flex-lg-row justify-content-between">
+              <div class="col-12 col-lg-8 d-flex flex-column flex-lg-row justify-content-between mt-5">
     <div class="pr-lg-3">
         <h4 class="text-black mb-3">Get in Touch</h4>
+        <hr> <!-- Divider line -->
+        <div class="mt-4"></div> <!-- Space between Get in Touch and Our Location -->
         <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i> 1 Block 1, Blackrock Business Park, Carysfort Ave,<br> 
             Newtown Blackrock, Blackrock, Co. Dublin, Ireland</p>
         <p class="mb-1"><i class="fas fa-phone me-2"></i> +353 (0)15397973</p>
@@ -47,6 +56,7 @@
                 <!-- Business Hours Section -->
                <div>
     <h4 class="text-black mb-3">Business Hours</h4>
+    <hr> <!-- Divider line -->
     <p class="mb-1">Monday - Friday: 8:00 AM - 6:00 PM</p>
     <p class="mb-2">Saturday: 9:00 AM - 4:00 PM</p>
     <p class="mb-2">Sunday: Closed</p>
@@ -57,7 +67,9 @@
         <!-- Google Map Section Below the Form and Address -->
         <div class="row mt-4">
             <div class="col-12">
+                <hr> 
                 <h4 class="text-black text-center mb-2">Our Location</h4>
+                <hr> <!-- Divider line -->
                 <div class="embed-responsive embed-responsive-16by9 border rounded shadow-md">
                     <iframe 
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2383.4876543210123!2d-6.178275110999744!3d53.29829418208393!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0:0x0!2zNTPCsDE3JzUzLjkiTiA2wrAxMCc0MS44Ilc!5e0!3m2!1sen!2sie!4v1699998877095!5m2!1sen!2sie" 
@@ -69,6 +81,7 @@
                         aria-label="Wheelmaster Office Location">
                     </iframe>
                 </div>
+                <hr> 
             </div>
         </div>
     </div>
