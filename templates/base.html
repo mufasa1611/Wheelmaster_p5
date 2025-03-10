@@ -139,15 +139,19 @@
           {% block content %}
           {% endblock %}
       </main>
-
+  <button class="btn-btt" aria-label="Scroll to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
       {% include 'includes/footer.html' %}
 
 
 
       {% block postloadjs %}
+      <script src="{% static 'js/btn.js' %}"></script>
       <script type="text/javascript">
           $('.toast').toast('show');
       </script>
       {% endblock %}
+  
   </body>
 </html>
