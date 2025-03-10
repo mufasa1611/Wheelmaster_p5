@@ -18,7 +18,7 @@ header {
 
 main {
     flex: 1 0 auto;
-    padding-top: 50px; 
+    padding-top: 50px;
 }
 
 .icon {
@@ -54,8 +54,8 @@ main {
     margin-top: 0;
     background: white;
     border-radius: 0;
-    border: 1px solid rgba(0,0,0,.15);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0, 0, 0, .15);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-item {
@@ -76,8 +76,8 @@ main {
 }
 
 main.main-bg {
-    margin-top: 0; 
-    min-height: calc(100vh - 0px); 
+    margin-top: 0;
+    min-height: calc(100vh - 0px);
 }
 
 .shop-now-button {
@@ -135,7 +135,7 @@ main.main-bg {
     z-index: -1;
 }
 
-a.category-badge > span.badge:hover {
+a.category-badge>span.badge:hover {
     background: #212529 !important;
     color: #fff !important;
 }
@@ -172,7 +172,7 @@ a.category-badge > span.badge:hover {
 
 .btn-btt {
     position: fixed;
-    bottom: 50px; 
+    bottom: 50px;
     right: 20px;
     z-index: 1000;
     background-color: #000;
@@ -266,11 +266,11 @@ input[name='q']::placeholder {
 .allauth-form-inner-content {
     background-color: rgba(248, 249, 250, 0.15);
     border: 2px solid rgba(0, 0, 0, 0.1);
-    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
-    padding: 2rem;
-    border-radius: 0.25rem;
-    margin-top: 8rem;
+    padding: 1rem;
+    margin-top: 5px;
+    border-radius: 0.35rem;
 }
 
 .allauth-form-inner-content p {
@@ -306,8 +306,8 @@ input[name='q']::placeholder {
     line-height: 1.5;
     border-radius: 0;
     width: 50%;
-    transition: color .3s ease-in-out, background-color .3s ease-in-out, 
-    border-color .3s ease-in-out, box-shadow .3s ease-in-out;
+    transition: color .3s ease-in-out, background-color .3s ease-in-out,
+        border-color .3s ease-in-out, box-shadow .3s ease-in-out;
 }
 
 .allauth-form-inner-content button:hover,
@@ -315,6 +315,21 @@ input[name='q']::placeholder {
     color: #fff;
     background-color: #222;
     border-color: #646262;
+}
+
+@media (max-width: 768px) {
+  .allauth-form-inner-content {
+    margin-top: 25px;
+  }
+}
+
+@media (max-width: 470px) and (min-width: 200px) {
+  .allauth-form-inner-content {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 .table-responsive {
@@ -403,8 +418,8 @@ input[name='q']::placeholder {
     margin-top: 0;
     background: white;
     border-radius: 0;
-    border: 1px solid rgba(0,0,0,.15);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0, 0, 0, .15);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .dropdown-submenu {
@@ -418,11 +433,11 @@ input[name='q']::placeholder {
     display: none;
 }
 
-.dropdown-submenu:hover > .dropdown-menu {
+.dropdown-submenu:hover>.dropdown-menu {
     display: block;
 }
 
-.dropdown-submenu > a::after {
+.dropdown-submenu>a::after {
     display: inline-block;
     margin-left: 0.5em;
     content: "▸";
@@ -440,28 +455,29 @@ input[name='q']::placeholder {
     color: #000;
     transform: translateX(5px);
 }
+
 .footer {
-    max-height: 100px !important; 
-    padding: 0 50px; 
+    max-height: 100px !important;
+    padding: 0 50px;
     background-color: #000 !important;
     color: #fff;
     text-align: center !important;
     display: flex;
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .icon-container {
     display: flex;
-    justify-content: space-between; 
-    width: 100%; 
-    max-width: 1400px; 
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
 .footer-icon {
-    font-size: 1.5rem; 
+    font-size: 1.5rem;
 }
 
 .footer-links {
@@ -498,10 +514,11 @@ input[name='q']::placeholder {
     .header-container {
         padding-top: 120px;
     }
+
     .allauth-form-inner-content {
         padding: 1rem;
-        margin-top: 10rem;
-       
+        margin-top: 25px;
+
     }
 }
 
@@ -548,7 +565,12 @@ input[name='q']::placeholder {
     }
 
     .footer-icon {
-        font-size: 1rem; 
+        font-size: 1rem;
+    }
+    .allauth-form-inner-content {
+        flex-shrink: inherit;
+        padding: 1rem;
+        margin-top: 25px;
     }
 }
 
@@ -560,7 +582,12 @@ input[name='q']::placeholder {
 }
 
 @media (max-width: 991px) {
-  
+
+    .allauth-form-inner-content {
+        flex-shrink: inherit;
+        margin-block: -80px;
+        margin-bottom: 3rem;
+    }
     .dropdown-submenu .dropdown-menu {
         left: 0;
         margin-left: 1rem;
@@ -568,7 +595,7 @@ input[name='q']::placeholder {
         margin-top: 0.2rem;
     }
 
-    .dropdown-submenu > a::after {
+    .dropdown-submenu>a::after {
         transform: rotate(90deg);
     }
 }
@@ -611,8 +638,5 @@ input[name='q']::placeholder {
         padding: .25rem .5rem !important;
     }
 
-    .allauth-form-inner-content {
-        padding: 1rem;
-        margin-top: 7rem;
-    }
+
 }
