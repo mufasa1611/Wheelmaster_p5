@@ -45,6 +45,26 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Automatically show dropdown menu on hover for desktop
+    $('.dropdown-submenu').on("mouseenter", function() {
+        $(this).find('.dropdown-menu').stop(true, true).slideDown(200);
+    }).on("mouseleave", function() {
+        $(this).find('.dropdown-menu').stop(true, true).slideUp(200);
+    });
+
+    // Add touch support for mobile
+    $('.dropdown-submenu > a').on("click touchstart", function(e) {
+        e.preventDefault();
+        var menu = $(this).siblings('.dropdown-menu');
+        
+        if (menu.is(':visible')) {
+            menu.stop(true, true).slideUp(200);
+        } else {
+            $('.dropdown-menu').slideUp(200); // Close other open menus
+            menu.stop(true, true).slideDown(200);
+        }
+    });
+
     // Prevent parent links from being clicked when hovering submenu
     $('.dropdown-submenu > a').on("click", function(e){
         e.preventDefault();
