@@ -440,20 +440,40 @@ input[name='q']::placeholder {
     color: #000;
     transform: translateX(5px);
 }
+.footer {
+    max-height: 100px !important; 
+    padding: 0 50px; 
+    background-color: #000 !important;
+    color: #fff;
+    text-align: center !important;
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+}
+
+.icon-container {
+    display: flex;
+    justify-content: space-between; 
+    width: 100%; 
+    max-width: 1400px; 
+    margin: 0 auto;
+}
+
+.footer-icon {
+    font-size: 1.5rem; 
+}
+
+.footer-links   
+{   display: flex;
+    justify-content: space-between; 
+    width: 100%;
+    max-width: 75rem; 
+    margin: auto; 
+}
 
 /* Responsive Navigation */
-@media (max-width: 991px) {
-    .dropdown-submenu .dropdown-menu {
-        left: 0;
-        margin-left: 1rem;
-        margin-right: 1rem;
-        margin-top: 0.5rem;
-    }
 
-    .dropdown-submenu > a::after {
-        transform: rotate(90deg);
-    }
-}
 
 @media (min-width: 1200px) {
     .container {
@@ -475,18 +495,33 @@ input[name='q']::placeholder {
     }
 }
 
-@media (max-width: 991px) {
+@media (max-width: 1030px) {
     main {
-        padding-top: 50px;
+        padding-top: 120px;
+    }
+}
+
+@media (max-width: 991px) {
+    .dropdown-submenu .dropdown-menu {
+        left: 0;
+        margin-left: 1rem;
+        margin-right: 1rem;
+        margin-top: 0.2rem;
+    }
+
+    .dropdown-submenu > a::after {
+        transform: rotate(90deg);
+    }
+}
+
+    main {
+        padding-top:75px;
     }
 
     .header-container {
         padding-top: 90px;
     }
 
-    body {
-        height: calc(100vh - 116px);
-    }
 
     .display-4.logo-font.text-black {
         font-size: 2rem;
@@ -529,7 +564,7 @@ input[name='q']::placeholder {
         padding: 1rem;
         margin-top: 6rem;
     }
-}
+
 
 @media (max-width: 470px) and (min-width: 200px) {
     .table td {
@@ -561,5 +596,9 @@ input[name='q']::placeholder {
 
     .table .remove-item {
         font-size: 0.9rem;
+    }
+
+    .footer-icon {
+        font-size: 1rem; 
     }
 }
