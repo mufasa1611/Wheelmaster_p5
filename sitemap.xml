@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <!-- Homepage -->
+    <url>
+        <loc>https://wheelmaster-fd0d6b0f7d27.herokuapp.com/</loc>
+        <lastmod>2025-02-21</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- Products Listing Page -->
+    <url>
+        <loc>https://wheelmaster-fd0d6b0f7d27.herokuapp.com/products/</loc>
+        <lastmod>2025-02-21</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Categories Pages -->
+    <url>
+        <loc>https://wheelmaster-fd0d6b0f7d27.herokuapp.com/products/?category=alloy_wheels</loc>
+        <lastmod>2025-02-21</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://wheelmaster-fd0d6b0f7d27.herokuapp.com/products/?category=steel_wheels</loc>
+        <lastmod>2025-02-21</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Bag (Cart) Page -->
+    <url>
+        <loc>https://wheelmaster-fd0d6b0f7d27.herokuapp.com/bag/</loc>
+        <lastmod>2025-02-21</lastmod>
+        <changefreq>always</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- Contact/About Pages -->
+    <url>
+        <loc>https://wheelmaster-fd0d6b0f7d27.herokuapp.com/about/</loc>
+        <lastmod>2025-02-21</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://wheelmaster-fd0d6b0f7d27.herokuapp.com/contact/</loc>
+        <lastmod>2025-02-21</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+</urlset>

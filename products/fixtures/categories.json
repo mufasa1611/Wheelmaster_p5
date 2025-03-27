@@ -1,11 +1,152 @@
 [
-    {"pk": 1, "model": "products.category", "fields": {"name": "wheelbarrows", "friendly_name": "Wellbarrows"}},
-    {"pk": 2, "model": "products.category", "fields": {"name": "transport_carts", "friendly_name": "Transport Carts"}},
-    {"pk": 3, "model": "products.category", "fields": {"name": "heavy_duty_wheels", "friendly_name": "Heavy-Duty Wheels"}},
-    {"pk": 4, "model": "products.category", "fields": {"name": "lightweight_wheels", "friendly_name": "Lightweight Wheels"}},
-    {"pk": 5, "model": "products.category", "fields": {"name": "industrial_accessories", "friendly_name": "Industrial Accessories"}},
-    {"pk": 6, "model": "products.category", "fields": {"name": "maintenance_kits", "friendly_name": "Maintenance Kits"}},
-    {"pk": 7, "model": "products.category", "fields": {"name": "new_releases", "friendly_name": "New Releases"}},
-    {"pk": 8, "model": "products.category", "fields": {"name": "clearance_items", "friendly_name": "Clearance Items"}},
-    {"pk": 9, "model": "products.category", "fields": {"name": "specialty_wheels", "friendly_name": "Specialty Wheels"}}
+    {
+        "pk": 1,
+        "model": "products.category",
+        "fields": {
+            "name": "equipment",
+            "friendly_name": "EQUIPMENT",
+            "parent": null,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 2,
+        "model": "products.category",
+        "fields": {
+            "name": "construction_tools",
+            "friendly_name": "CONSTRUCTION TOOLS",
+            "parent": null,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 3,
+        "model": "products.category",
+        "fields": {
+            "name": "special_offers",
+            "friendly_name": "SPECIAL OFFERS",
+            "parent": null,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 4,
+        "model": "products.category",
+        "fields": {
+            "name": "wheelbarrows",
+            "friendly_name": "Wheelbarrows",
+            "parent": 1,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 5,
+        "model": "products.category",
+        "fields": {
+            "name": "transport_trolleys",
+            "friendly_name": "Transport Trolleys",
+            "parent": 1,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 6,
+        "model": "products.category",
+        "fields": {
+            "name": "standard_wheelbarrows",
+            "friendly_name": "Standard Wheelbarrows",
+            "parent": 4,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 7,
+        "model": "products.category",
+        "fields": {
+            "name": "kids_wheelbarrows",
+            "friendly_name": "Kids Wheelbarrows",
+            "parent": 4,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 8,
+        "model": "products.category",
+        "fields": {
+            "name": "folding_trolleys",
+            "friendly_name": "Folding Trolleys",
+            "parent": 5,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 9,
+        "model": "products.category",
+        "fields": {
+            "name": "heavy_duty_trolleys",
+            "friendly_name": "Heavy-Duty Trolleys",
+            "parent": 5,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 10,
+        "model": "products.category",
+        "fields": {
+            "name": "transport_carts",
+            "friendly_name": "Transport Carts",
+            "parent": 5,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 11,
+        "model": "products.category",
+        "fields": {
+            "name": "scaffolding_construction",
+            "friendly_name": "Scaffolding & Construction",
+            "parent": 2,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 12,
+        "model": "products.category",
+        "fields": {
+            "name": "scaffolding_kits",
+            "friendly_name": "Scaffolding Kits",
+            "parent": 11,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 13,
+        "model": "products.category",
+        "fields": {
+            "name": "concrete_mixers",
+            "friendly_name": "Concrete Mixers",
+            "parent": 11,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 14,
+        "model": "products.category",
+        "fields": {
+            "name": "new_releases",
+            "friendly_name": "New Releases",
+            "parent": 3,
+            "is_active": true
+        }
+    },
+    {
+        "pk": 15,
+        "model": "products.category",
+        "fields": {
+            "name": "clearance_items",
+            "friendly_name": "Clearance Items",
+            "parent": 3,
+            "is_active": true
+        }
+    }
 ]
