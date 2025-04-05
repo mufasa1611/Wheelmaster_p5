@@ -274,6 +274,12 @@ STRIPE_WH_SECRET = os.getenv('STRIPE_WH_SECRET', default='')
 FREE_DELIVERY_THRESHOLD = 100
 STANDARD_DELIVERY_PERCENTAGE = 10
 
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 # Logging configuration
 LOGGING = {
     'version': 1,
