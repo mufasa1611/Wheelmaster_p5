@@ -77,13 +77,18 @@
                                         <p class="mb-0 text-muted">No rating available</p>
                                     {% endif %}
                                     {% if request.user.is_superuser %}
-                                    <small class="ml-3">
-                                        <button class="edit-button btn btn-warning" data-url="{% url 'edit_product' product.id %}">Edit</button> | 
-                                        <button class="delete-button btn btn-danger" 
-                                                data-product-id="{{ product.id }}"
-                                                data-product-name="{{ product.name }}">Delete</button>
-                                    </small>
-                                    {% endif %}
+                            <div class="admin-controls">
+                                <button class="btn btn-sm btn-info edit-button" 
+                                        data-url="{% url 'edit_product' product.id %}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-button" 
+                                        data-product-id="{{ product.id }}"
+                                        data-product-name="{{ product.name }}">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        {% endif %}
                                 </div>
                             </div>
                         </div>

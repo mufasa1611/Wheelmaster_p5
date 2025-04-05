@@ -10,4 +10,5 @@ urlpatterns = [
     path('inventory/', views.inventory_management, name='inventory_management'),
     path('adjust_stock/', views.adjust_stock, name='adjust_stock'),
     path('stock/<int:product_id>/', views.get_stock_info, name='get_stock_info'),
+    path('reset_reserved/<int:product_id>/', views.reset_reserved, name='reset_reserved'),  # Added reset_reserved URL pattern
 ]

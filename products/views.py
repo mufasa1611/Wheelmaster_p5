@@ -5,7 +5,7 @@ from django.db.models import Q, F
 from django.db.models.functions import Lower
 from .models import Product, Category
 from .forms import ProductForm
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 import json
 
  # A view to show all products, including sorting and search queries 
@@ -210,3 +210,23 @@ def get_stock_info(request, product_id):
         })
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def reset_reserved(request, product_id):
+    """Reset reserved stock for a product"""
+    if not request.user.is_superuser:
+        return JsonResponse({'error': 'Permission denied'}, status=403)
+
+    if request.method != 'POST':
+        return HttpResponseBadRequest('Invalid method')
+
+    product = get_object_or_404(Product, id=product_id)
+    product.reserved_qty = 0  # Reset reserved quantity
+    product.save()
+
+    return JsonResponse({
+        'stock_qty': product.stock_qty,
+        'reserved_qty': product.reserved_qty,
+        'available_qty': product.stock_qty - product.reserved_qty
+    })
