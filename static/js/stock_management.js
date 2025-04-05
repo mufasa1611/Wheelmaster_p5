@@ -57,7 +57,7 @@ class StockManager {
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
         // Reset reserved stock and clear from bag
-        fetch(`/bag/reset_reserved/${productId}/`, {
+        fetch(`/products/reset_reserved/${productId}/`, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrfToken,
@@ -76,11 +76,6 @@ class StockManager {
             if (stockQty) stockQty.textContent = data.stock_qty;
             if (reservedQty) reservedQty.textContent = '0';
             if (availableQty) availableQty.textContent = data.available_qty;
-
-            // Clear the product item from the bag
-            const bag = JSON.parse(sessionStorage.getItem('bag')) || {};
-            delete bag[productId];
-            sessionStorage.setItem('bag', JSON.stringify(bag));
 
             // Update bag mini if exists
             if (typeof updateBagTotal === 'function') {
@@ -168,6 +163,11 @@ class StockManager {
         if (quantity <= 0) {
             element.classList.add('out-of-stock');
         } else if (quantity <= 5) {
+            element.classList.add('low-stock');
+        } else if (quantity <= 20) {
+            element.classList.add('medium-stock');
+        } else {
+            element.classList.add('high-stock');
         }
     }
 
