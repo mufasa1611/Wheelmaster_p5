@@ -27,7 +27,7 @@
     </a>
 </li>
 <li class="list-inline-item dropdown">
-    <a class="text-black nav-link d-block d-lg-none" href="#" id="user-options" data-toggle="dropdown" aria-expanded="false">
+    <a class="text-black nav-link d-block d-lg-none" href="#" id="user-options" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <div class="text-center">
             <div><i class="fa-solid fa-user fa-lg"></i></div>
             <p class="my-0">My Account</p>
@@ -46,6 +46,26 @@
             <a href="{% url 'account_login' %}" class="dropdown-item">Login</a>
         {% endif %}
     </div>
+</li>
+<div class="dropdown-menu border-0 w-100 p-3 rounded-0 my-0" aria-labelledby="mobile-categories">
+    {% for main_category, children in nav_categories.items %}
+        <div class="dropdown-submenu">
+            <a href="{% url 'products' %}?category={{ main_category.name }}" class="dropdown-item main-category-link">
+                All {{ main_category.friendly_name }}
+            </a>
+            <a href="#" class="dropdown-item submenu-toggle">
+                {{ main_category.friendly_name }}
+            </a>
+            <div class="dropdown-menu">
+                {% for child in children %}
+                    <a href="{% url 'products' %}?category={{ child.name }}" class="dropdown-item">
+                        {{ child.friendly_name }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
 </li>
 <li class="list-inline-item">
     <a class="{% if grand_total %}text-primary font-weight-bold{% else %}text-black{% endif %} nav-link d-block d-lg-none" href="{% url 'view_bag' %}">

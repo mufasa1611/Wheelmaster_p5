@@ -4,55 +4,39 @@
     <ul class="navbar-nav w-auto mx-auto">
         <li class="nav-item">
             <a class="logo-font font-weight-bold nav-link text-black mr-5" href="{% url 'products' %}" id="all-products-link">
-                ALL PRODUCTS
+ALL PRODUCTS
+
             </a>
         </li>
 
         {% for main_category, children in nav_categories.items %}
-            <li class="nav-item dropdown">
-                <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" 
-                   id="{{ main_category.name|lower }}-link" data-toggle="dropdown" 
-                   aria-haspopup="true" aria-expanded="false">
-                    {{ main_category.friendly_name|upper }}
-                </a>
-                <div class="dropdown-menu border-0" aria-labelledby="{{ main_category.name|lower }}-link">
-                    <a href="{% url 'products' %}?category={{ main_category.name }}" class="dropdown-item">
-                        All {{ main_category.friendly_name }}
-                    </a>
-                {% for child in children %}
-                    {% if child.children.exists %}
-                        <div class="dropdown-submenu">
-                            <span class="dropdown-item">
-                                {{ child.friendly_name }}&nbsp; &#9654; 
-                            </span>
-                            <div class="dropdown-menu">
-                                {% for grandchild in child.get_children %}
-                                    {% if grandchild.is_active %}
-                                        <a href="{% url 'products' %}?category={{ grandchild.name }}" class="dropdown-item">
-                                            {{ grandchild.friendly_name }}
-                                        </a>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% else %}
-                        <a href="{% url 'products' %}?category={{ child.name }}" class="dropdown-item" style="cursor: pointer;">{{ child.friendly_name }}</a> <!-- Clickable link style -->
-                    {% endif %}
-                {% endfor %}
-                </div>
-            </li>
-        {% endfor %}
-     
         <li class="nav-item dropdown">
-            <a class="logo-font font-weight-bold nav-link text-black mr-5" href="#" id="about-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                About Us
+<a class="nav-link text-black mr-5 dropdown-toggle" href="#" id="navbarDropdown{{ main_category.id }}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-family: 'Lato', Arial, sans-serif; font-weight: bold;">
+                {{ main_category.friendly_name|upper }}
             </a>
-            <div class="dropdown-menu border-0" aria-labelledby="about-link">
-                <a href="{% url 'who_we_are' %}" class="dropdown-item">Who We Are</a>
-                <a href="{% url 'contact' %}" class="dropdown-item">Contact Us</a>
-                <a href="{% url 'newsletter_signup' %}" class="dropdown-item">Newsletter</a>
+    
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown{{ main_category.id }}">
+<a class="dropdown-item" href="{% url 'products' %}?category={{ main_category.name }}">
+                    All {{ main_category.friendly_name }}
+                </a>
+    
+                {% if children %}
+                    {% include 'includes/category_recursive.html' with categories=children %}
+                {% endif %}
             </div>
         </li>
+    {% endfor %}
+    
+    <li class="nav-item dropdown">
+        <a class="logo-font font-weight-bold nav-link text-black mr-5 dropdown-toggle" href="#" id="about-link" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            About Us
+        </a>
+        <div class="dropdown-menu border-0" aria-labelledby="about-link">
+            <a href="{% url 'who_we_are' %}" class="dropdown-item">Who We Are</a>
+            <a href="{% url 'contact' %}" class="dropdown-item">Contact Us</a>
+            <a href="{% url 'newsletter_signup' %}" class="dropdown-item">Newsletter</a>
+        </div>
+    </li>
     </ul>
 </div>
 

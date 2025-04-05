@@ -1,0 +1,13 @@
+{% for item in categories %}
+<div class="dropdown-submenu">
+  <a href="{% url 'products' %}?category={{ item.category.name }}&show_all=true" class="dropdown-item dropdown-toggle">
+    {{ item.category.friendly_name }}
+  </a>
+
+  {% if item.children %}
+  <div class="dropdown-menu">
+    {% include 'includes/category_recursive.html' with categories=item.children %}
+  </div>
+  {% endif %}
+</div>
+{% endfor %}

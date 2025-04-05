@@ -7,423 +7,187 @@ class StockManager {
     }
 
     loadBagQuantities() {
-        // Load current quantities in bag for each product
         fetch('/bag/quantities/')
             .then(response => response.json())
             .then(data => {
                 this.bagQuantities = data;
-                this.updateStockDisplays(); // Update displays after loading quantities
+                this.updateStockDisplays();
             })
             .catch(error => console.error('Error loading bag quantities:', error));
     }
 
     setupEventListeners() {
-        // Listen for quantity changes in bag
-        document.querySelectorAll('.qty_input').forEach(input => {
-            input.addEventListener('change', (e) => {
-                const itemId = e.target.dataset.item_id;
-                const size = e.target.dataset.size || 'default';
-                const quantity = parseInt(e.target.value);
-                
-                // Update local bag quantities immediately
-                if (!this.bagQuantities[itemId]) {
-                    this.bagQuantities[itemId] = {};
-                }
-                this.bagQuantities[itemId][size] = quantity;
-                
-                // Update stock displays
-                this.updateStockDisplays();
-
-                // Update the bag via AJAX
-                const form = e.target.closest('form');
-                if (form) {
-                    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                    const url = `/bag/adjust/${itemId}/`;
-                    const formData = new FormData(form);
-
-                    fetch(url, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'X-CSRFToken': csrfToken,
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => {
-                        if (!response.ok) throw new Error('Network response was not ok');
-                        // Refresh the page if quantity is 0
-                        if (quantity === 0) window.location.reload();
-                        // Otherwise update the subtotal
-                        this.updateItemPrice(itemId);
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        window.location.reload(); // Reload on error to ensure consistency
-                    });
-                }
-            });
-        });
-
-        // Listen for increment/decrement clicks
-        document.querySelectorAll('.increment-qty, .decrement-qty').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                const itemId = e.target.dataset.item_id;
-                const qtyInput = document.querySelector(`#id_qty_${itemId}`);
-                if (qtyInput) {
-                    const currentValue = parseInt(qtyInput.value);
-                    const isIncrement = e.target.classList.contains('increment-qty');
-                    const newValue = isIncrement ? currentValue + 1 : currentValue - 1;
-                    
-                    if (newValue >= parseInt(qtyInput.min) && newValue <= parseInt(qtyInput.max)) {
-                        qtyInput.value = newValue;
-                        qtyInput.dispatchEvent(new Event('change'));
-                    }
-                }
-            });
-        });
-
-        // Listen for add to bag clicks
-        document.querySelectorAll('.add-to-bag').forEach(button => {
-            button.addEventListener('click', (e) => this.validateStockBeforeSubmit(e));
-        });
-
-        // Listen for size changes if applicable
-        const sizeSelector = document.querySelector('#id_product_size');
-        if (sizeSelector) {
-            sizeSelector.addEventListener('change', () => this.updateStockDisplays());
-        }
-
-        // Listen for remove item clicks
-        document.querySelectorAll('.remove-item').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                const itemId = e.target.closest('.remove-item').dataset.item_id;
-                const size = e.target.closest('.remove-item').dataset.size || 'default';
-                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                
-                // Update local bag quantities immediately
-                if (this.bagQuantities[itemId]) {
-                    if (size === 'default') {
-                        delete this.bagQuantities[itemId];
-                    } else {
-                        delete this.bagQuantities[itemId][size];
-                        if (Object.keys(this.bagQuantities[itemId]).length === 0) {
-                            delete this.bagQuantities[itemId];
-                        }
-                    }
-                }
-
-                // Send remove request
-                const url = `/bag/remove/${itemId}/`;
-                const data = new FormData();
-                data.append('csrfmiddlewaretoken', csrfToken);
-                if (size !== 'default') data.append('product_size', size);
-
-                fetch(url, {
-                    method: 'POST',
-                    body: data,
-                    headers: {
-                        'X-CSRFToken': csrfToken,
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    // Remove the item row from the table
-                    const row = e.target.closest('tr');
-                    if (row) row.remove();
-                    // Update stock displays
-                    this.updateStockDisplays();
-                    // Update grand total
-                    this.updateTotalPrice();
-                    // Reload if bag is empty
-                    const bagItems = document.querySelectorAll('.bag-items tr');
-                    if (bagItems.length === 0) window.location.reload();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    window.location.reload(); // Reload on error to ensure consistency
-                });
-            });
-        });
-
-        // Stock adjustment buttons
-        document.querySelectorAll('.adjust-stock').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
+        // Use event delegation for stock adjustment buttons
+        document.body.addEventListener('click', (e) => {
+            if (e.target.closest('.adjust-stock')) {
+                const button = e.target.closest('.adjust-stock');
                 const productId = button.dataset.productId;
                 const action = button.dataset.action;
                 const input = button.closest('.stock-actions').querySelector('.stock-input');
-                const quantity = parseInt(input.value);
+                const quantity = parseInt(input.value) || 0;
 
-                if (!quantity || quantity < 0) {
-                    this.showToast('Please enter a valid quantity', 'error');
-                    return;
+                if (quantity > 0) {
+                    this.adjustStock(productId, quantity, action);
                 }
+            }
 
-                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-                fetch('/products/adjust_stock/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken,
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
-                        product_id: productId,
-                        quantity: quantity,
-                        action: action
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.error) {
-                        throw new Error(data.error);
-                    }
-                    // Update the displayed quantities
-                    const row = button.closest('tr');
-                    row.querySelector('.stock-qty').textContent = data.stock_qty;
-                    row.querySelector('.reserved-qty').textContent = data.reserved_qty;
-                    row.querySelector('.available-qty').textContent = data.available_qty;
-                    input.value = 0; // Reset input
-
-                    // Show success message
-                    const actionText = action === 'add' ? 'added to' : 'removed from';
-                    this.showToast(`Successfully ${actionText} stock: ${quantity} items`, 'success');
-                })
-                .catch(error => {
-                    this.showToast(error.message || 'Error adjusting stock', 'error');
-                    console.error('Error:', error);
-                });
-            });
+            if (e.target.closest('.reset-reserved')) {
+                this.handleResetReserved(e);
+            }
         });
 
-        // Add toast display method if it doesn't exist
-        if (!this.showToast) {
-            this.showToast = (message, type = 'info') => {
-                const toast = document.createElement('div');
-                toast.className = `toast toast-${type}`;
-                toast.textContent = message;
-                
-                const container = document.getElementById('toast-container');
-                if (!container) {
-                    const newContainer = document.createElement('div');
-                    newContainer.id = 'toast-container';
-                    document.body.appendChild(newContainer);
+        // Use event delegation for stock input changes
+        document.body.addEventListener('change', (e) => {
+            if (e.target.classList.contains('stock-input')) {
+                const value = parseInt(e.target.value);
+                if (isNaN(value) || value < 0) {
+                    e.target.value = 0;
                 }
-                
-                const toastContainer = document.getElementById('toast-container');
-                toastContainer.appendChild(toast);
-                
-                setTimeout(() => {
-                    toast.classList.add('show');
-                    setTimeout(() => {
-                        toast.classList.remove('show');
-                        setTimeout(() => toast.remove(), 300);
-                    }, 3000);
-                }, 100);
-            };
-        }
-
-        // Update stock when navigating back
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) {
-                // Page was loaded from cache (back/forward navigation)
-                this.loadBagQuantities();
             }
         });
     }
 
-    async updateStockDisplays() {
-        const stockElements = document.querySelectorAll('[data-stock-qty]');
-        stockElements.forEach(async (element) => {
-            const productId = element.dataset.productId;
-            if (productId) {
-                await this.updateStockDisplay(element, productId);
+    handleResetReserved(e) {
+        const button = e.target.closest('.reset-reserved');
+        const productId = button.dataset.productId;
+        const row = button.closest('tr');
+
+        if (!productId) return;
+
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // Reset reserved stock and clear from bag
+        fetch(`/bag/reset_reserved/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
             }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) throw new Error(data.error);
+
+            // Update displays
+            const stockQty = row.querySelector('.stock-qty');
+            const reservedQty = row.querySelector('.reserved-qty');
+            const availableQty = row.querySelector('.available-qty');
+
+            if (stockQty) stockQty.textContent = data.stock_qty;
+            if (reservedQty) reservedQty.textContent = '0';
+            if (availableQty) availableQty.textContent = data.available_qty;
+
+            // Clear the product item from the bag
+            const bag = JSON.parse(sessionStorage.getItem('bag')) || {};
+            delete bag[productId];
+            sessionStorage.setItem('bag', JSON.stringify(bag));
+
+            // Update bag mini if exists
+            if (typeof updateBagTotal === 'function') {
+                updateBagTotal();
+            }
+
+            this.showToast('Reserved stock reset successfully', 'success');
+        })
+        .catch(error => {
+            this.showToast(error.message || 'Error resetting reserved stock', 'error');
+            console.error('Error:', error);
         });
     }
 
-    async updateStockDisplay(element, productId) {
-        try {
-            const response = await fetch(`/products/stock/${productId}/`);
-            if (!response.ok) throw new Error('Failed to fetch stock info');
-            const data = await response.json();
-            
-            // The available_qty from the server already accounts for reserved quantities
-            const actuallyAvailable = data.available_qty;
-            
-            // Update the display
-            element.textContent = `${actuallyAvailable} in stock`;
-            
-            // Update visual indicators
-            this.updateStockIndicators(element, actuallyAvailable);
-            
-            // Update quantity input max value if on product detail page
-            const qtyInput = document.querySelector(`#id_qty_${productId}`);
-            if (qtyInput) {
-                qtyInput.max = actuallyAvailable;
-                if (parseInt(qtyInput.value) > actuallyAvailable) {
-                    qtyInput.value = actuallyAvailable;
-                }
-                // Update increment/decrement button states
-                const itemId = qtyInput.dataset.item_id;
-                if (itemId) {
-                    this.handleEnableDisable(itemId);
-                }
+    adjustStock(productId, quantity, action) {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        console.log(`Adjusting stock for Product ID: ${productId}, Quantity: ${quantity}, Action: ${action}`);
+
+        if (!productId || !action || quantity <= 0) {
+            console.error('Invalid data for stock adjustment:', { productId, quantity, action });
+            this.showToast('Invalid data for stock adjustment', 'error');
+            return;
+        }
+
+        fetch('/products/adjust_stock/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                product_id: productId,
+                quantity: quantity,
+                action: action
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                console.error(`Error adjusting stock: ${response.status} ${response.statusText}`);
+                throw new Error(`Error adjusting stock: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error(`Error adjusting stock: ${data.error}`);
+                throw new Error(data.error);
             }
 
-            // Update add to bag button state
-            const addToBagBtn = document.querySelector('.add-to-bag');
-            if (addToBagBtn) {
-                addToBagBtn.disabled = actuallyAvailable <= 0;
+            console.log(`Stock adjusted successfully:`, data);
+
+            const row = document.querySelector(`tr[data-product-id="${productId}"]`);
+            if (row) {
+                const stockQty = row.querySelector('.stock-qty');
+                const availableQty = row.querySelector('.available-qty');
+                const input = row.querySelector('.stock-input');
+
+                if (stockQty) stockQty.textContent = data.stock_qty;
+                if (availableQty) availableQty.textContent = data.available_qty;
+                if (input) input.value = '0';
             }
-        } catch (error) {
-            console.error('Error updating stock display:', error);
-        }
+
+            this.showToast(`Stock ${action}ed successfully`, 'success');
+        })
+        .catch(error => {
+            this.showToast(error.message || 'Error adjusting stock', 'error');
+            console.error('Error:', error);
+        });
+    }
+
+    updateStockDisplays() {
+        document.querySelectorAll('[data-stock-qty]').forEach(element => {
+            const quantity = parseInt(element.dataset.stockQty) || 0;
+            this.updateStockIndicators(element, quantity);
+        });
     }
 
     updateStockIndicators(element, quantity) {
         if (!element) return;
-        
-        // Remove existing classes
+
         element.classList.remove('out-of-stock', 'low-stock', 'medium-stock', 'high-stock');
         
-        // Add appropriate class based on quantity
         if (quantity <= 0) {
             element.classList.add('out-of-stock');
-            console.log('Setting out-of-stock', quantity);
         } else if (quantity <= 5) {
-            element.classList.add('low-stock');
-            console.log('Setting low-stock', quantity);
-        } else if (quantity <= 10) {
-            element.classList.add('medium-stock');
-            console.log('Setting medium-stock', quantity);
-        } else {
-            element.classList.add('high-stock');
-            console.log('Setting high-stock', quantity);
         }
     }
 
-    handleEnableDisable(itemId) {
-        const qtyInput = document.querySelector(`#id_qty_${itemId}`);
-        if (!qtyInput) return;
+    showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
 
-        const currentValue = parseInt(qtyInput.value);
-        const maxAvailable = parseInt(qtyInput.max);
-        const minusDisabled = currentValue < 2;
-        const plusDisabled = currentValue >= maxAvailable;
-
-        const minusBtn = document.querySelector(`#decrement-qty_${itemId}`);
-        const plusBtn = document.querySelector(`#increment-qty_${itemId}`);
-        
-        if (minusBtn) minusBtn.disabled = minusDisabled;
-        if (plusBtn) plusBtn.disabled = plusDisabled;
-    }
-
-    validateStockBeforeSubmit(e) {
-        const form = e.target.closest('form');
-        const productId = form.querySelector('[name="product_id"]')?.value || form.querySelector('.qty_input')?.dataset.item_id;
-        const quantity = parseInt(form.querySelector('[name="quantity"]').value);
-        const size = form.querySelector('[name="product_size"]')?.value;
-
-        if (!productId) return;
-
-        const qtyInput = form.querySelector(`#id_qty_${productId}`);
-        const maxAvailable = parseInt(qtyInput.max);
-
-        if (quantity > maxAvailable) {
-            e.preventDefault();
-            alert('Sorry, there is not enough stock available for this quantity.');
-        }
-    }
-
-    updateItemPrice(itemId) {
-        const subtotalElement = document.querySelector(`#subtotal_${itemId}`);
-        if (subtotalElement) {
-            const qtyInput = document.querySelector(`#id_qty_${itemId}`);
-            const priceElement = document.querySelector(`#price_${itemId}`);
-            if (qtyInput && priceElement) {
-                const quantity = parseInt(qtyInput.value);
-                const price = parseFloat(priceElement.textContent);
-                const subtotal = (quantity * price).toFixed(2);
-                subtotalElement.textContent = subtotal;
-                this.updateTotalPrice();
-            }
-        }
-    }
-
-    updateTotalPrice() {
-        let total = 0;
-        document.querySelectorAll('[id^="subtotal_"]').forEach(element => {
-            total += parseFloat(element.textContent);
-        });
-        
-        const grandTotal = document.querySelector('#grand_total');
-        if (grandTotal) {
-            grandTotal.textContent = total.toFixed(2);
-        }
-
-        const deliveryElement = document.querySelector('#delivery_cost');
-        if (deliveryElement) {
-            const deliveryCost = parseFloat(deliveryElement.textContent);
-            const finalTotal = total + deliveryCost;
-            const finalTotalElement = document.querySelector('#final_total');
-            if (finalTotalElement) {
-                finalTotalElement.textContent = finalTotal.toFixed(2);
-            }
-        }
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
     }
 
     initializeStockLevels() {
-        const stockElements = document.querySelectorAll('[data-stock-qty]');
-        console.log('Found stock elements:', stockElements.length);
-        
-        stockElements.forEach(element => {
-            const text = element.textContent || '';
-            const match = text.match(/(\d+)/);
-            if (match) {
-                const quantity = parseInt(match[1]);
-                console.log('Initializing stock level:', quantity);
-                this.updateStockIndicators(element, quantity);
-            }
-        });
+        this.updateStockDisplays();
     }
 }
 
-// Initialize stock management when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
     window.stockManager = new StockManager();
-
-    // Description Read More functionality
-    const readMoreBtn = document.querySelector('.read-more-btn');
-    const descriptionContent = document.querySelector('.description-content');
-    
-    if (readMoreBtn && descriptionContent) {
-        // Check if content needs expansion button
-        function checkContentHeight() {
-            const needsExpansion = descriptionContent.scrollHeight > 80;
-            if (needsExpansion) {
-                descriptionContent.classList.add('needs-expansion');
-                readMoreBtn.style.display = 'inline-block';
-            } else {
-                descriptionContent.classList.remove('needs-expansion', 'collapsed');
-                readMoreBtn.style.display = 'none';
-            }
-        }
-
-        // Initial check
-        setTimeout(checkContentHeight, 100); // Small delay to ensure content is rendered
-
-        readMoreBtn.addEventListener('click', function() {
-            const isCollapsed = descriptionContent.classList.contains('collapsed');
-            descriptionContent.classList.toggle('collapsed');
-            readMoreBtn.textContent = isCollapsed ? 'show less' : 'read more';
-        });
-
-        // Update on window resize
-        window.addEventListener('resize', checkContentHeight);
-    }
 });
