@@ -1,33 +1,77 @@
- // Set up CSRF token for all AJAX requests
+// Utility Functions
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        document.cookie.split(';').forEach(cookie => {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + '=')) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
             }
-        }
+        });
     }
     return cookieValue;
 }
 
-// Set up AJAX CSRF token
+// AJAX Setup
 $.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-        }
-    }
+    headers: { 'X-CSRFToken': getCookie('csrftoken') }
 });
 
-// Update quantity on change
+// Loading Indicator Functions
+function showLoadingIndicator(message = "Processing...") {
+    $('#loading-indicator').text(message).show();
+}
+
+function hideLoadingIndicator() {
+    $('#loading-indicator').hide();
+}
+
+// Disable Buttons During Requests
+function disableButtons() {
+    $('.decrement-qty, .increment-qty').prop('disabled', true);
+}
+
+function enableButtons() {
+    $('.decrement-qty, .increment-qty').prop('disabled', false);
+}
+
+// Prevent Duplicate Requests
+let requestQueue = [];
+let isProcessingRequest = false;
+
+function processNextRequest() {
+    if (requestQueue.length > 0 && !isProcessingRequest) {
+        isProcessingRequest = true;
+        const { url, data, successCallback, errorCallback } = requestQueue.shift();
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: data,
+            success: function(response) {
+                isProcessingRequest = false;
+                successCallback(response);
+                processNextRequest(); // Process the next request in queue
+            },
+            error: function(xhr) {
+                isProcessingRequest = false;
+                errorCallback(xhr);
+                processNextRequest(); // Continue with the next request
+            }
+        });
+    }
+}
+
+function queueRequest(url, data, successCallback, errorCallback) {
+    requestQueue.push({ url, data, successCallback, errorCallback });
+    processNextRequest();
+}
+
+// Update Quantity Function
 function updateQuantity(itemId, size, quantity) {
-    var url = `/bag/adjust/${itemId}/`;
-    var csrfToken = getCookie('csrftoken');
-    var data = {
+    const url = `/bag/adjust/${itemId}/`;
+    const csrfToken = getCookie('csrftoken');
+    const data = {
         'csrfmiddlewaretoken': csrfToken,
         'quantity': quantity
     };
@@ -35,134 +79,119 @@ function updateQuantity(itemId, size, quantity) {
         data.product_size = size;
     }
 
-    $.ajax({
-        url: url,
-        type: 'POST',
-        data: data,
-        success: function(response) {
+    showLoadingIndicator();
+    disableButtons();
+
+    queueRequest(
+        url,
+        data,
+        function(response) {
             location.reload();
         },
-        error: function(xhr) {
-            if (xhr.responseJSON && xhr.responseJSON.error) {
-                alert(xhr.responseJSON.error);
-            } else {
-                alert('Error updating quantity');
-            }
+        function(xhr) {
+            showToast(xhr.responseJSON?.error || 'Error updating quantity');
             location.reload();
         }
-    });
+    );
 }
 
+// Handle Enabling/Disabling Buttons
+function handleEnableDisable(itemId, size) {
+    const qtyInputs = $(`.qty_input[data-item_id='${itemId}']`);
+    const qtyInput = $(`.qty_input[data-item_id='${itemId}'][data-size='${size}']`);
+    const currentValue = parseInt(qtyInput.val()) || 0; // Current value for specific size
+    const maxStock = parseInt(qtyInput.attr('max')) || 0; // Max stock for the item
+
+    // Calculate total quantity across all sizes
+    const totalQuantity = Array.from(qtyInputs).reduce((sum, input) => {
+        return sum + (parseInt($(input).val()) || 0);
+    }, 0);
+
+    // Update button states
+    const minusDisabled = currentValue < 2;
+    const plusDisabled = totalQuantity >= maxStock;
+
+    // Apply states to the buttons for the current size
+    $(`.decrement-qty[data-item_id='${itemId}'][data-size='${size}']`).prop('disabled', minusDisabled);
+    $(`.increment-qty[data-item_id='${itemId}'][data-size='${size}']`).prop('disabled', plusDisabled);
+}
+
+// Document Ready
 $(document).ready(function() {
-    // Prevent non-numeric keys and zero
-    $('.qty_input').keypress(function(e) {
-        // Get the key code
-        var keyCode = e.which ? e.which : e.keyCode;
-        
-        // Allow only keys 1-9 (key codes 49-57)
-        if (keyCode < 49 || keyCode > 57) {
-            e.preventDefault();
-            return false;
-        }
-        return true;
+    // Initialize Button States
+    $('.qty_input').each(function() {
+        const itemId = $(this).data('item_id');
+        const size = $(this).data('size') || '';
+        handleEnableDisable(itemId, size);
     });
 
-    // Handle quantity input changes
+    // Input Change Handler
     $('.qty_input').change(function() {
-        var itemId = $(this).data('item_id');
-        var size = $(this).data('size') || '';
-        var quantity = parseInt($(this).val());
-        
+        const itemId = $(this).data('item_id');
+        const size = $(this).data('size') || '';
+        const quantity = parseInt($(this).val()) || 0;
+
         if (quantity >= 1) {
             updateQuantity(itemId, size, quantity);
         }
     });
 
-    // Remove item and reload on click
+    // Increment Quantity
+    $('.increment-qty').click(function(e) {
+        e.preventDefault();
+        const itemId = $(this).data('item_id');
+        const size = $(this).data('size') || '';
+        const qtyInput = $(`.qty_input[data-item_id='${itemId}'][data-size='${size}']`);
+        let currentValue = parseInt(qtyInput.val()) || 0; // Ensure numeric value
+        const maxStock = parseInt(qtyInput.attr('max')) || 0; // Ensure numeric value
+
+        if (currentValue < maxStock) {
+            currentValue += 1;
+            qtyInput.val(currentValue);
+            handleEnableDisable(itemId, size);
+            updateQuantity(itemId, size, currentValue);
+        } else {
+            showToast('Maximum stock reached.', 'error');
+            handleEnableDisable(itemId, size); // Refresh button states
+        }
+    });
+
+    // Decrement Quantity
+    $('.decrement-qty').click(function(e) {
+        e.preventDefault();
+        const itemId = $(this).data('item_id');
+        const size = $(this).data('size') || '';
+        const qtyInput = $(`.qty_input[data-item_id='${itemId}'][data-size='${size}']`);
+        let currentValue = parseInt(qtyInput.val()) || 0; // Ensure numeric value
+
+        if (currentValue > 1) {
+            currentValue -= 1;
+            qtyInput.val(currentValue);
+            handleEnableDisable(itemId, size);
+            updateQuantity(itemId, size, currentValue);
+        }
+    });
+
+    // Remove Item
     $('.remove-item').click(function(e) {
         e.preventDefault();
-        var itemId = $(this).data('item_id');
-        var size = $(this).data('size');
-        var url = `/bag/remove/${itemId}/`;
-        var csrfToken = getCookie('csrftoken');
-        var data = {
+        const itemId = $(this).data('item_id');
+        const size = $(this).data('size');
+        const csrfToken = getCookie('csrftoken');
+        const data = {
             'csrfmiddlewaretoken': csrfToken,
             'product_size': size
         };
 
-        $.ajax({
-            url: url,
-            type: 'POST',
-            data: data,
-            success: function(response) {
+        queueRequest(
+            `/bag/remove/${itemId}/`,
+            data,
+            function(response) {
                 location.reload();
             },
-            error: function(xhr) {
-                if (xhr.responseJSON && xhr.responseJSON.error) {
-                    alert(xhr.responseJSON.error);
-                } else {
-                    alert('Error removing item');
-                }
-                location.reload();
+            function(xhr) {
+                showToast(xhr.responseJSON?.error || 'Error removing item');
             }
-        });
-    });
-
-    // Quantity controls
-    function handleEnableDisable(itemId, size) {
-        var currentValue = parseInt($(`.qty_input[data-item_id='${itemId}'][data-size='${size}']`).val());
-        var maxAvailable = parseInt($(`.qty_input[data-item_id='${itemId}'][data-size='${size}']`).attr('max'));
-        var minusDisabled = currentValue < 2;
-        var plusDisabled = currentValue >= maxAvailable;
-
-        $(`.decrement-qty[data-item_id='${itemId}'][data-size='${size}']`).prop('disabled', minusDisabled);
-        $(`.increment-qty[data-item_id='${itemId}'][data-size='${size}']`).prop('disabled', plusDisabled);
-    }
-
-    // Enable/disable +/- buttons on load
-    var allQtyInputs = $('.qty_input');
-    for(var i = 0; i < allQtyInputs.length; i++){
-        var itemId = $(allQtyInputs[i]).data('item_id');
-        var size = $(allQtyInputs[i]).data('size') || '';
-        handleEnableDisable(itemId, size);
-    }
-
-    // Increment quantity
-    $('.increment-qty').click(function(e) {
-        e.preventDefault();
-        var itemId = $(this).data('item_id');
-        var size = $(this).data('size') || '';
-        var closestInput = $(`.qty_input[data-item_id='${itemId}'][data-size='${size}']`);
-        var currentValue = parseInt(closestInput.val());
-        var maxStock = parseInt(closestInput.attr('max'));
-        var currentQty = parseInt(closestInput.data('current-qty'));
-        
-        // Calculate how many more items we can add
-        var availableToAdd = maxStock - currentQty;
-        
-        if (availableToAdd > 0 && currentValue < maxStock) {
-            currentValue += 1;
-            closestInput.val(currentValue);
-            handleEnableDisable(itemId, size);
-            updateQuantity(itemId, size, currentValue);
-        } else {
-            alert('Sorry, no more stock available for this item.');
-        }
-    });
-
-    // Decrement quantity
-    $('.decrement-qty').click(function(e) {
-        e.preventDefault();
-        var itemId = $(this).data('item_id');
-        var size = $(this).data('size') || '';
-        var closestInput = $(`.qty_input[data-item_id='${itemId}'][data-size='${size}']`);
-        var currentValue = parseInt(closestInput.val());
-        
-        if (currentValue > 1) {
-            currentValue -= 1;
-            closestInput.val(currentValue);
-            handleEnableDisable(itemId, size);
-            updateQuantity(itemId, size, currentValue);
-        }
+        );
     });
 });

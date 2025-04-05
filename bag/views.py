@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect, reverse, HttpResponse, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.contrib import messages
 from products.models import Product
+from django.db import transaction
+from django.contrib.auth.decorators import login_required
 
 def view_bag(request):
     """ A view that renders the bag contents page """
     return render(request, 'bag/bag.html')
 
+@transaction.atomic
 def add_to_bag(request, item_id):
     """ Add a quantity of the specified product to the shopping bag """
-
     product = get_object_or_404(Product, pk=item_id)
     quantity = int(request.POST.get('quantity', 1))
     redirect_url = request.POST.get('redirect_url', '/')
@@ -59,6 +61,7 @@ def add_to_bag(request, item_id):
     request.session['bag'] = bag
     return redirect(redirect_url)
 
+@transaction.atomic
 def adjust_bag(request, item_id):
     """Adjust the quantity of the specified product to the specified amount"""
     try:
@@ -118,6 +121,7 @@ def adjust_bag(request, item_id):
         messages.error(request, f'Error updating bag: {str(e)}')
         return HttpResponse(status=500)
 
+@transaction.atomic
 def remove_from_bag(request, item_id):
     """Remove the item from the shopping bag"""
     try:
@@ -167,6 +171,7 @@ def remove_from_bag(request, item_id):
             return HttpResponse(status=500)
         return redirect(reverse('view_bag'))
 
+@transaction.atomic
 def get_bag_quantities(request):
     """Return the current quantities in the shopping bag as JSON"""
     bag = request.session.get('bag', {})
@@ -179,3 +184,22 @@ def get_bag_quantities(request):
             quantities[item_id] = item_data
     
     return JsonResponse(quantities)
+
+@login_required
+def reset_reserved_stock(request, product_id):
+    """Reset reserved stock for a product"""
+    if not request.user.is_superuser:
+        return JsonResponse({'error': 'Permission denied'}, status=403)
+
+    if request.method != 'POST':
+        return HttpResponseBadRequest('Invalid method')
+
+    product = get_object_or_404(Product, id=product_id)
+    product.reserved_qty = 0  # Reset reserved quantity
+    product.save()
+
+    return JsonResponse({
+        'stock_qty': product.stock_qty,
+        'reserved_qty': product.reserved_qty,
+        'available_qty': product.stock_qty - product.reserved_qty
+    })
